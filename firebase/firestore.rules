@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Ideaxcorp Firestore security rules
+// - Public visitors can read published content and site settings, and submit contact messages.
+// - Admins (a document at admins/{uid}) can read and write everything else.
+// - The admins collection itself is managed only from the Firebase console.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Content that has a draft/published state.
+    function canReadContent() {
+      return resource.data.published == true || isAdmin();
+    }
+
+    function validMessage(d) {
+      return d.keys().hasOnly(['name', 'email', 'phone', 'subject', 'message', 'read', 'createdAt'])
+        && d.keys().hasAll(['name', 'email', 'phone', 'subject', 'message', 'read', 'createdAt'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 120
+        && d.email is string && d.email.size() <= 200 && d.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
+        && d.phone is string && d.phone.size() <= 30
+        && d.subject is string && d.subject.size() <= 80
+        && d.message is string && d.message.size() >= 10 && d.message.size() <= 4000
+        && d.read == false
+        && d.createdAt == request.time;
+    }
+
+    match /admins/{uid} {
+      // Lets the admin UI check whether the signed-in user is an admin.
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    match /services/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+    match /portfolio/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+    match /blogs/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+    match /testimonials/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+    match /faqs/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+    match /team/{id} {
+      allow read: if canReadContent();
+      allow write: if isAdmin();
+    }
+
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Contact form submissions: anyone may create a well-formed message; only admins can read or manage them.
+    match /messages/{id} {
+      allow create: if validMessage(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

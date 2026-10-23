@@ -1,0 +1,192 @@
+// Field definitions for each content type managed in the admin.
+// The same shapes are used by the public site and by src/data/site.js.
+
+const published = { name: 'published', label: 'Published', type: 'toggle', default: true, help: 'Only published items appear on the website.' }
+const order = { name: 'order', label: 'Display order', type: 'number', help: 'Lower numbers appear first.' }
+const pairs = (name, label, itemLabel = 'Item', help) => ({ name, label, type: 'pairs', itemLabel, help })
+
+export const schemas = {
+  services: {
+    title: 'Services',
+    singular: 'service',
+    sort: ['order', 'asc'],
+    titleField: 'title',
+    subtitle: (s) => s.tagline,
+    thumb: 'image',
+    fields: [
+      { type: 'section', label: 'Basics' },
+      { name: 'title', label: 'Title', type: 'text', required: true },
+      { name: 'slug', label: 'URL slug', type: 'slug', from: 'title', required: true, help: 'Page address: /services/your-slug' },
+      { name: 'tagline', label: 'Tagline', type: 'text', help: 'Short label shown above the title, e.g. “Create identity”.' },
+      order,
+      { name: 'shortDescription', label: 'Short description', type: 'textarea', rows: 3, required: true, help: 'Used on cards and the homepage.' },
+      { name: 'intro', label: 'Page introduction', type: 'textarea', rows: 4 },
+      { name: 'image', label: 'Image', type: 'image' },
+      { type: 'section', label: 'New & existing businesses', help: 'Optional. Leave the lists empty to hide this block.' },
+      { name: 'buildLead', label: 'New businesses — intro', type: 'textarea', rows: 2 },
+      { name: 'buildItems', label: 'New businesses — checklist', type: 'list', help: 'One item per line.' },
+      { name: 'buildNote', label: 'New businesses — closing line', type: 'text', wide: true },
+      { name: 'rebuildLead', label: 'Existing businesses — intro', type: 'textarea', rows: 2 },
+      { name: 'rebuildItems', label: 'Existing businesses — checklist', type: 'list', help: 'One item per line.' },
+      { name: 'rebuildNote', label: 'Existing businesses — closing line', type: 'text', wide: true },
+      { type: 'section', label: 'What’s included' },
+      pairs('offerings', 'Offerings', 'Offering'),
+      { type: 'section', label: 'Highlights', help: 'Optional dark band, e.g. “Why choose Ideaxcorp”.' },
+      { name: 'highlightsTitle', label: 'Highlights title', type: 'text' },
+      { name: 'highlightsIntro', label: 'Highlights intro', type: 'text' },
+      pairs('highlights', 'Highlights', 'Highlight'),
+      { type: 'section', label: 'More (optional)' },
+      pairs('challenges', 'Challenges we solve', 'Challenge'),
+      pairs('process', 'Process steps', 'Step', 'Shown as numbered steps in this order.'),
+      { name: 'platforms', label: 'Platforms', type: 'list', help: 'One per line.' },
+      published,
+    ],
+  },
+
+  portfolio: {
+    title: 'Portfolio',
+    singular: 'project',
+    sort: ['order', 'asc'],
+    titleField: 'title',
+    subtitle: (p) => p.category,
+    thumb: 'image',
+    fields: [
+      { name: 'title', label: 'Project title', type: 'text', required: true },
+      { name: 'slug', label: 'Slug', type: 'slug', from: 'title' },
+      { name: 'category', label: 'Category', type: 'text', required: true, suggestions: ['Logo & Branding', 'Website Design', 'Graphic Designing', 'Social Media', 'E-commerce'] },
+      { name: 'url', label: 'Live website', type: 'text', inputType: 'url', help: 'Optional link shown as “Visit website”.' },
+      { name: 'description', label: 'Description', type: 'textarea', rows: 3 },
+      { name: 'image', label: 'Cover image', type: 'image', help: 'Portrait images (4:5) look best. Without one, a branded title card is shown.' },
+      { name: 'gallery', label: 'More images', type: 'images' },
+      { name: 'tags', label: 'Tags', type: 'list', rows: 3, help: 'One per line.' },
+      { name: 'featured', label: 'Feature on homepage', type: 'toggle', help: 'The first three featured projects with images appear on the homepage.' },
+      order,
+      published,
+    ],
+  },
+
+  blogs: {
+    title: 'Blog posts',
+    singular: 'post',
+    sort: ['publishedAt', 'desc'],
+    titleField: 'title',
+    subtitle: (b) => b.publishedAt,
+    thumb: 'coverImage',
+    fields: [
+      { name: 'title', label: 'Title', type: 'text', required: true },
+      { name: 'slug', label: 'URL slug', type: 'slug', from: 'title', required: true, help: 'Page address: /blog/your-slug' },
+      { name: 'publishedAt', label: 'Publish date', type: 'date', required: true, default: () => new Date().toISOString().slice(0, 10) },
+      { name: 'author', label: 'Author', type: 'text', default: 'Ideaxcorp' },
+      { name: 'category', label: 'Category', type: 'text' },
+      { name: 'readingTime', label: 'Reading time (minutes)', type: 'number', help: 'Leave at 0 to calculate it automatically.' },
+      { name: 'excerpt', label: 'Excerpt', type: 'textarea', rows: 3, help: 'One or two sentences shown on cards and in search results.' },
+      { name: 'coverImage', label: 'Cover image', type: 'image' },
+      { name: 'content', label: 'Article', type: 'html', required: true, help: 'HTML. Use the toolbar for headings, links, lists and images; check the Preview tab before saving.' },
+      { name: 'published', label: 'Published', type: 'toggle', default: false, help: 'Drafts are only visible here.' },
+    ],
+    beforeSave: (data) => {
+      if (!data.readingTime) {
+        const words = (data.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length
+        data.readingTime = Math.max(1, Math.round(words / 220))
+      }
+      return data
+    },
+  },
+
+  testimonials: {
+    title: 'Testimonials',
+    singular: 'testimonial',
+    sort: ['order', 'asc'],
+    titleField: 'name',
+    subtitle: (t) => t.company,
+    thumb: 'image',
+    fields: [
+      { name: 'name', label: 'Name', type: 'text', required: true },
+      { name: 'company', label: 'Company', type: 'text' },
+      { name: 'quote', label: 'Quote', type: 'textarea', rows: 5, required: true },
+      { name: 'image', label: 'Photo', type: 'image' },
+      order,
+      published,
+    ],
+  },
+
+  faqs: {
+    title: 'FAQs',
+    singular: 'question',
+    sort: ['order', 'asc'],
+    titleField: 'question',
+    subtitle: (f) => (f.featured ? 'On homepage' : ''),
+    fields: [
+      { name: 'question', label: 'Question', type: 'text', required: true, wide: true },
+      { name: 'answer', label: 'Answer', type: 'textarea', rows: 5, required: true },
+      { name: 'featured', label: 'Show on homepage', type: 'toggle' },
+      order,
+      published,
+    ],
+  },
+
+  team: {
+    title: 'Team',
+    singular: 'team member',
+    sort: ['order', 'asc'],
+    titleField: 'name',
+    subtitle: (m) => m.role,
+    thumb: 'image',
+    fields: [
+      { name: 'name', label: 'Name', type: 'text', required: true },
+      { name: 'role', label: 'Role', type: 'text', required: true },
+      { name: 'image', label: 'Photo', type: 'image', help: 'Portrait photo. Without one, initials are shown.' },
+      order,
+      published,
+    ],
+  },
+}
+
+export const settingsFields = [
+  { type: 'section', label: 'Homepage hero' },
+  { name: 'heroEyebrow', label: 'Eyebrow', type: 'text', wide: true },
+  { name: 'heroTitle', label: 'Headline', type: 'textarea', rows: 3, help: 'Put each line of the headline on its own line. The last word is set in violet.' },
+  { name: 'heroSubtitle', label: 'Supporting text', type: 'textarea', rows: 3 },
+  { name: 'introText', label: 'Introduction (below the hero)', type: 'textarea', rows: 3, help: 'Shown under “Good ideas deserve extraordinary execution.”' },
+  { type: 'section', label: 'Contact details' },
+  { name: 'email', label: 'Email', type: 'text', inputType: 'email' },
+  { name: 'phone', label: 'Phone', type: 'text' },
+  { name: 'whatsapp', label: 'WhatsApp number', type: 'text', help: 'Digits with country code, no spaces — e.g. 971567448005.' },
+  { name: 'whatsappMessage', label: 'WhatsApp greeting', type: 'text' },
+  { name: 'responseTime', label: 'Response time note', type: 'text' },
+  { name: 'workingHours', label: 'Working hours', type: 'text' },
+  {
+    name: 'offices',
+    label: 'Offices',
+    type: 'objects',
+    itemLabel: 'Office',
+    fields: [
+      { name: 'label', label: 'Label, e.g. Head office · UAE', type: 'text' },
+      { name: 'address', label: 'Address', type: 'text' },
+      { name: 'hours', label: 'Hours', type: 'text' },
+    ],
+  },
+  { type: 'section', label: 'Social links', help: 'Leave a field empty to hide that icon.' },
+  { name: 'socials.instagram', label: 'Instagram', type: 'text', inputType: 'url' },
+  { name: 'socials.facebook', label: 'Facebook', type: 'text', inputType: 'url' },
+  { name: 'socials.linkedin', label: 'LinkedIn', type: 'text', inputType: 'url' },
+  { name: 'socials.youtube', label: 'YouTube', type: 'text', inputType: 'url' },
+  { type: 'section', label: 'About' },
+  { name: 'tagline', label: 'Tagline', type: 'text', wide: true },
+  { name: 'trustLine', label: 'Trust line', type: 'text', wide: true },
+  { name: 'aboutStory', label: 'Our story', type: 'textarea', rows: 8, help: 'Separate paragraphs with a blank line.' },
+  { name: 'vision', label: 'Vision', type: 'textarea', rows: 3 },
+  { name: 'mission', label: 'Mission', type: 'textarea', rows: 3 },
+  { name: 'markets', label: 'Markets', type: 'list', rows: 5, help: 'One per line.' },
+  { type: 'section', label: 'Founder’s note' },
+  { name: 'founderName', label: 'Name', type: 'text' },
+  { name: 'founderRole', label: 'Role', type: 'text' },
+  { name: 'founderImage', label: 'Photo', type: 'image' },
+  { name: 'founderNote', label: 'Message', type: 'textarea', rows: 10, help: 'Separate paragraphs with a blank line.' },
+  { type: 'section', label: 'Media & links' },
+  { name: 'showreelUrl', label: 'Showreel (YouTube URL)', type: 'text', inputType: 'url', wide: true },
+  { name: 'portfolioDriveUrl', label: 'More work (Drive URL)', type: 'text', inputType: 'url', wide: true },
+  { type: 'section', label: 'Privacy policy' },
+  { name: 'privacyUpdated', label: 'Last updated', type: 'date' },
+  { name: 'privacyPolicy', label: 'Policy text', type: 'html' },
+]

@@ -1,0 +1,287 @@
+@import 'tailwindcss';
+
+/*
+  Ideaxcorp design tokens
+  - violet is sampled from the logo (#9700FF); everything else is a neutral built around it.
+  - Hubot Sans (display) is set wide for headlines and narrow for labels; Mona Sans is the body face.
+*/
+@theme {
+  --color-ink: #0e0b12;
+  --color-ink-2: #1a1620;
+  --color-ink-3: #2a2531;
+  --color-paper: #ffffff;
+  --color-mist: #f5f3f8;
+  --color-line: #e7e3ee;
+  --color-graphite: #5b5766;
+  --color-smoke: #a19cab;
+  --color-violet: #9700ff;
+  --color-violet-deep: #6e00ba;
+  --color-lilac: #ebddff;
+
+  --font-display: 'Hubot Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Mona Sans', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-cinema: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-float: float 6s ease-in-out infinite;
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  --container-site: 88rem;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-paper font-sans text-ink;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+  ::selection {
+    background: var(--color-violet);
+    color: white;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-violet);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  img {
+    @apply max-w-full;
+  }
+}
+
+@layer components {
+  .site-container {
+    @apply mx-auto w-full max-w-(--container-site) px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Wide, heavy display type — the brand's voice. */
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.92;
+  }
+  .display-md {
+    font-family: var(--font-display);
+    font-stretch: 115%;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+  /* Narrow uppercase labels. */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-stretch: 75%;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .lead {
+    @apply text-lg leading-relaxed text-graphite md:text-xl;
+  }
+
+  /* Rich text for blog articles and policy pages. */
+  .prose-ix {
+    @apply text-[1.075rem] leading-[1.8] text-ink/85;
+  }
+  .prose-ix > * + * {
+    @apply mt-6;
+  }
+  .prose-ix h2 {
+    @apply mt-14 text-[1.7rem] text-ink md:text-[2rem];
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  .prose-ix h3 {
+    @apply mt-10 text-xl text-ink md:text-[1.4rem];
+    font-family: var(--font-display);
+    font-stretch: 105%;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .prose-ix h4 {
+    @apply mt-8 text-lg font-semibold text-ink;
+  }
+  .prose-ix a {
+    @apply text-violet underline decoration-violet/30 underline-offset-4 transition-colors hover:decoration-violet;
+  }
+  .prose-ix strong {
+    @apply font-semibold text-ink;
+  }
+  .prose-ix ul,
+  .prose-ix ol {
+    @apply space-y-2 pl-6;
+  }
+  .prose-ix ul {
+    @apply list-[square] marker:text-violet;
+  }
+  .prose-ix ol {
+    @apply list-decimal marker:font-semibold marker:text-violet;
+  }
+  .prose-ix blockquote {
+    @apply border-l-4 border-violet bg-mist px-6 py-5 text-ink;
+  }
+  .prose-ix figure img,
+  .prose-ix > img {
+    @apply w-full rounded-lg;
+  }
+  .prose-ix figcaption {
+    @apply mt-3 text-sm text-graphite;
+  }
+  .prose-ix table {
+    @apply block w-full overflow-x-auto border-collapse text-[0.95rem] md:table;
+  }
+  .prose-ix th,
+  .prose-ix td {
+    @apply border border-line px-4 py-3 text-left align-top;
+  }
+  .prose-ix th {
+    @apply bg-mist font-semibold text-ink;
+  }
+  .prose-ix code {
+    @apply rounded bg-mist px-1.5 py-0.5 text-[0.9em];
+  }
+  .prose-ix details {
+    @apply rounded-lg border border-line px-5 py-4;
+  }
+  .prose-ix summary {
+    @apply cursor-pointer font-semibold text-ink;
+  }
+  .prose-ix hr {
+    @apply my-12 border-line;
+  }
+  .prose-invert-ix {
+    @apply text-white/80;
+  }
+
+  /* Admin form controls. */
+  .field-input {
+    @apply w-full rounded-md border border-line bg-white px-3.5 py-2.5 text-[0.95rem] text-ink transition outline-none placeholder:text-smoke focus:border-violet focus:ring-3 focus:ring-violet/15;
+  }
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Slow horizontal drift used by the work reel and the client marquee. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+}
+.pause-on-hover:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Ambient motion for the homepage */
+@keyframes float-slow {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -14px; }
+}
+@keyframes shadow-breathe {
+  0%, 100% { opacity: 0.55; scale: 1; }
+  50% { opacity: 0.35; scale: 0.85; }
+}
+@keyframes sheen {
+  0%, 55% { transform: translateX(0); }
+  100% { transform: translateX(200%); }
+}
+@keyframes spin-slower {
+  to { rotate: 360deg; }
+}
+@keyframes scroll-cue {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(350%); }
+}
+@keyframes drift {
+  0%, 100% { translate: 0 0; }
+  50% { translate: -60px 40px; }
+}
+.animate-float-slow { animation: float-slow 7s ease-in-out infinite; }
+.animate-shadow-breathe { animation: shadow-breathe 7s ease-in-out infinite; }
+.animate-sheen { animation: sheen 6s ease-in-out 3s infinite; }
+.animate-spin-slower { animation: spin-slower 90s linear infinite; }
+.animate-scroll-cue { animation: scroll-cue 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+.animate-drift { animation: drift 16s ease-in-out infinite; }
+
+/* Underline that draws in from the left on hover (on the element or its .group parent). */
+.link-underline {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0% 1px no-repeat;
+  transition: background-size 0.6s var(--ease-cinema);
+  padding-bottom: 2px;
+}
+.link-underline:hover,
+.group:hover .link-underline,
+.group:focus-visible .link-underline {
+  background-size: 100% 1px;
+}
+
+/* Lenis smooth scrolling */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-float-slow,
+  .animate-shadow-breathe,
+  .animate-sheen,
+  .animate-spin-slower,
+  .animate-scroll-cue,
+  .animate-drift {
+    animation: none;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

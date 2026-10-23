@@ -1,0 +1,208 @@
+{
+  "hosting": {
+    "public": "frontend/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/about-us",
+        "destination": "/about",
+        "type": 301
+      },
+      {
+        "source": "/services-2",
+        "destination": "/services",
+        "type": 301
+      },
+      {
+        "source": "/faqs-2",
+        "destination": "/faq",
+        "type": 301
+      },
+      {
+        "source": "/blog-grid",
+        "destination": "/blog",
+        "type": 301
+      },
+      {
+        "source": "/blog-listing",
+        "destination": "/blog",
+        "type": 301
+      },
+      {
+        "source": "/creative-branding",
+        "destination": "/services/creative-branding",
+        "type": 301
+      },
+      {
+        "source": "/web-development-2",
+        "destination": "/services/web-development",
+        "type": 301
+      },
+      {
+        "source": "/social-media-management",
+        "destination": "/services/social-media-management",
+        "type": 301
+      },
+      {
+        "source": "/search-engine-optimization",
+        "destination": "/services/search-engine-optimization",
+        "type": 301
+      },
+      {
+        "source": "/dubai",
+        "destination": "/services/search-engine-optimization",
+        "type": 301
+      },
+      {
+        "source": "/thrissur",
+        "destination": "/services/search-engine-optimization",
+        "type": 301
+      },
+      {
+        "source": "/performance-marketing",
+        "destination": "/services/performance-marketing",
+        "type": 301
+      },
+      {
+        "source": "/ecommerce-solutions",
+        "destination": "/services/ecommerce-solutions",
+        "type": 301
+      },
+      {
+        "source": "/ranking-without-strategy-is-pointless",
+        "destination": "/blog/ranking-without-strategy-is-pointless",
+        "type": 301
+      },
+      {
+        "source": "/chatgpt-astra-what-is-gpt-6-astra",
+        "destination": "/blog/chatgpt-astra-what-is-gpt-6-astra",
+        "type": 301
+      },
+      {
+        "source": "/microsoft-clarity-ai-citations-branded-nonbranded",
+        "destination": "/blog/microsoft-clarity-ai-citations-branded-nonbranded",
+        "type": 301
+      },
+      {
+        "source": "/aeo-geo-seo-for-businesses",
+        "destination": "/blog/aeo-geo-seo-for-businesses",
+        "type": 301
+      },
+      {
+        "source": "/google-business-profile-local-customers",
+        "destination": "/blog/google-business-profile-local-customers",
+        "type": 301
+      },
+      {
+        "source": "/generative-engine-optimization-guide",
+        "destination": "/blog/generative-engine-optimization-guide",
+        "type": 301
+      },
+      {
+        "source": "/ai-search-optimization-how-to-rank-in-chatgpt",
+        "destination": "/blog/ai-search-optimization-how-to-rank-in-chatgpt",
+        "type": 301
+      },
+      {
+        "source": "/marketing-trends-2026the-future-is-already-here",
+        "destination": "/blog/marketing-trends-2026the-future-is-already-here",
+        "type": 301
+      },
+      {
+        "source": "/why-customers-dont-trust-your-business",
+        "destination": "/blog/why-customers-dont-trust-your-business",
+        "type": 301
+      },
+      {
+        "source": "/seo-alogitham-update-2026",
+        "destination": "/blog/seo-alogitham-update-2026",
+        "type": 301
+      },
+      {
+        "source": "/meta-andromeda-ai-facebook-instagram-ads",
+        "destination": "/blog/meta-andromeda-ai-facebook-instagram-ads",
+        "type": 301
+      },
+      {
+        "source": "/seo-automation-in-2026-the-ultimate-guide-for-beginners-experts",
+        "destination": "/blog/seo-automation-in-2026-the-ultimate-guide-for-beginners-experts",
+        "type": 301
+      },
+      {
+        "source": "/instagram-algorithm-2026-how-to-fix",
+        "destination": "/blog/instagram-algorithm-2026-how-to-fix",
+        "type": 301
+      },
+      {
+        "source": "/digital-marketing-trends-2026-10-powerful-trends",
+        "destination": "/blog/digital-marketing-trends-2026-10-powerful-trends",
+        "type": 301
+      },
+      {
+        "source": "/must-have-things-every-business-should-set-up-in-2026",
+        "destination": "/blog/must-have-things-every-business-should-set-up-in-2026",
+        "type": 301
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/assets/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
+      },
+      {
+        "source": "/images/**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=2592000"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=()"
+          }
+        ]
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firebase/firestore.rules",
+    "indexes": "firebase/firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "firebase/storage.rules"
+  }
+}
