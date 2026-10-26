@@ -1,39 +1,50 @@
 import { useRef } from 'react'
-import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react'
+import { motion, useInView, useMotionValue, useScroll, useSpring, useTransform } from 'motion/react'
 import Button from '../../components/Button'
-import Magnetic from '../../components/motion/Magnetic'
-import { Play } from '../../components/Icons'
 import { EASE } from '../../components/Reveal'
 import { useMediaQuery, useRichMotion } from '../../hooks/useMedia'
-import Monolith from './Monolith'
 
-const T = { bg: 0, mark: 0.35, words: 0.6, visual: 0.9, copy: 1.45, details: 1.8 }
+const T = { eyebrow: 0.3, words: 0.45, chip: 1.05, cards: 1.15, copy: 1.7, rail: 2 }
 
-function Headline({ text }) {
+/**
+ * Centred headline. Every line rises out of a mask; the last line sits inside a white
+ * rounded box — the inverted highlight that anchors the reference composition.
+ */
+function Headline({ text, shown }) {
   const lines = text.split('\n')
-  let n = 0
   return (
-    <h1 className="display text-[clamp(2.5rem,10.6vw,5.75rem)] lg:text-[clamp(4.5rem,6.3vw,8rem)] leading-[0.86] tracking-[-0.045em]" aria-label={lines.join(' ')}>
-      {lines.map((line, li) => {
-        const words = line.split(' ')
+    <h1 className="display text-center text-[clamp(2.6rem,11vw,5rem)] leading-[1.02] lg:text-[clamp(5rem,7vw,8.25rem)]" aria-label={lines.join(' ')}>
+      {lines.map((line, i) => {
+        const last = i === lines.length - 1 && lines.length > 1
         return (
-          <span key={li} className="block whitespace-nowrap" aria-hidden="true">
-            {words.map((w, wi) => {
-              const i = n++
-              const last = li === lines.length - 1 && wi === words.length - 1
-              return (
-                <span key={wi} className="mr-[0.2em] inline-block overflow-hidden pb-[0.06em] align-top last:mr-0">
+          <span key={i} className="block overflow-hidden pb-[0.12em]" aria-hidden="true">
+            <motion.span
+              className="relative inline-block"
+              initial={{ y: '110%' }}
+              animate={shown ? { y: '0%' } : undefined}
+              transition={{ duration: 1.2, ease: EASE, delay: T.words + i * 0.14 }}
+            >
+              {last ? (
+                <span className="relative inline-block px-[0.2em]">
                   <motion.span
-                    className={`inline-block ${last ? 'text-violet' : ''}`}
-                    initial={{ y: '110%', rotate: 4 }}
-                    animate={{ y: '0%', rotate: 0 }}
-                    transition={{ duration: 1.3, ease: EASE, delay: T.words + i * 0.13 }}
+                    className="absolute inset-0 origin-left rounded-[0.2em] bg-white"
+                    initial={{ scaleX: 0 }}
+                    animate={shown ? { scaleX: 1 } : undefined}
+                    transition={{ duration: 0.9, ease: EASE, delay: T.chip }}
+                  />
+                  <motion.span
+                    className="relative"
+                    initial={{ color: '#ffffff' }}
+                    animate={shown ? { color: '#0e0b12' } : undefined}
+                    transition={{ duration: 0.5, delay: T.chip + 0.35 }}
                   >
-                    {w}
+                    {line}
                   </motion.span>
                 </span>
-              )
-            })}
+              ) : (
+                line
+              )}
+            </motion.span>
           </span>
         )
       })}
@@ -41,193 +52,205 @@ function Headline({ text }) {
   )
 }
 
-/** A real work image floating at a given depth around the mark. */
-function FloatCard({ src, label, className, depth, sx, sy, delay }) {
-  const x = useTransform(sx, [-0.5, 0.5], [depth, -depth])
-  const y = useTransform(sy, [-0.5, 0.5], [depth * 0.6, -depth * 0.6])
+/** A speech-bubble tag that pins a work category to a card. */
+function Tag({ children, className = '' }) {
   return (
-    <motion.figure
-      className={`absolute overflow-hidden rounded-md border border-white/10 bg-ink-2 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.8)] ${className}`}
-      style={{ x, y }}
-      initial={{ opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' }}
-      animate={{ opacity: 1, clipPath: 'inset(0% 0% 0% 0%)' }}
-      transition={{ duration: 1.5, ease: EASE, delay }}
+    <span
+      className={`absolute z-10 whitespace-nowrap rounded-full bg-white px-4 py-2 text-sm font-semibold text-ink shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] after:absolute after:left-1/2 after:top-full after:-translate-x-1/2 after:border-[7px] after:border-transparent after:border-t-white ${className}`}
     >
-      <img src={src} alt="" className="size-full object-cover" />
-      {label && (
-        <figcaption className="eyebrow absolute bottom-2 left-2 rounded-sm bg-ink/75 px-2 py-1 text-[0.62rem] text-white/80 backdrop-blur">{label}</figcaption>
-      )}
-    </motion.figure>
+      @{children}
+    </span>
   )
 }
 
-export default function Hero({ settings, work, onShowreel }) {
+/**
+ * Real portfolio images fanned out in an arc of tilted, rounded cards. They deal in from below,
+ * follow the pointer slightly at different depths, and straighten and lift on hover.
+ */
+function CardFan({ cards, sx, sy, rich, compact, shown }) {
+  const n = cards.length
+  const mid = (n - 1) / 2
+  const spread = compact ? 21 : 15 // % of the row between card centres
+  const tagged = new Set([0, Math.floor(mid), n - 1])
+
+  return (
+    <div className="relative mx-auto h-[14rem] w-full max-w-[96rem] sm:h-[19rem] lg:h-[22rem]">
+      {cards.map((c, i) => {
+        const o = i - mid
+        const rot = o * (compact ? 7 : 5.5)
+        const lift = Math.abs(o) * Math.abs(o) * (compact ? 10 : 12)
+        return (
+          <FanCard
+            key={c.id ?? i}
+            card={c}
+            left={50 + o * spread}
+            rot={rot}
+            lift={lift}
+            depth={14 + Math.abs(o) * 10}
+            sx={sx}
+            sy={sy}
+            rich={rich}
+            shown={shown}
+            z={n - Math.abs(Math.round(o))}
+            delay={T.cards + Math.abs(o) * 0.08}
+            tag={tagged.has(i) && c.category ? c.category : null}
+            tagBelow={i === Math.floor(mid)}
+          />
+        )
+      })}
+    </div>
+  )
+}
+
+function FanCard({ card, left, rot, lift, depth, sx, sy, rich, shown, z, delay, tag, tagBelow }) {
+  const x = useTransform(sx, [-0.5, 0.5], [depth, -depth])
+  const y = useTransform(sy, [-0.5, 0.5], [depth * 0.5, -depth * 0.5])
+  return (
+    <motion.div
+      className="absolute top-0 w-[38%] -translate-x-1/2 sm:w-[30%] lg:w-[22%]"
+      style={{ left: `${left}%`, zIndex: z, x: rich ? x : 0, y: rich ? y : 0 }}
+    >
+      <motion.figure
+        className="group relative"
+        initial={{ opacity: 0, y: 260, rotate: 0 }}
+        animate={shown ? { opacity: 1, y: lift, rotate: rot } : undefined}
+        whileHover={rich ? { rotate: 0, y: lift - 24, scale: 1.04, zIndex: 30 } : undefined}
+        transition={{ duration: 1.4, ease: EASE, delay }}
+      >
+        <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-ink-2 shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9)] ring-1 ring-white/10 sm:rounded-3xl">
+          <img src={card.image} alt="" className="size-full object-cover object-top transition-transform duration-[1.2s] ease-cinema group-hover:scale-105" />
+        </div>
+        {tag && (
+          <motion.span
+            className="contents"
+            initial={{ opacity: 0 }}
+            animate={shown ? { opacity: 1 } : undefined}
+            transition={{ duration: 0.6, delay: delay + 0.9 }}
+          >
+            <Tag className={tagBelow ? '-bottom-12 left-1/2 hidden -translate-x-1/2 rotate-[-4deg] after:bottom-full after:top-auto after:border-b-white after:border-t-transparent sm:block' : '-top-10 left-1/2 hidden -translate-x-1/2 rotate-[-6deg] sm:block'}>
+              {tag}
+            </Tag>
+          </motion.span>
+        )}
+      </motion.figure>
+    </motion.div>
+  )
+}
+
+/** Endless strip of the markets the agency serves. */
+function Ticker({ items }) {
+  const row = [...items, ...items, ...items, ...items]
+  return (
+    <div className="relative overflow-hidden border-y border-white/10 py-4 [mask-image:linear-gradient(90deg,transparent,black_12%,black_88%,transparent)]">
+      <div className="animate-marquee flex w-max" style={{ '--marquee-duration': '40s' }}>
+        {[0, 1].map((k) => (
+          <ul key={k} className="flex shrink-0 items-center" aria-hidden={k === 1}>
+            {row.map((m, i) => (
+              <li key={i} className="flex items-center gap-8 pr-8 text-lg font-semibold text-white/55 sm:text-xl">
+                {m}
+                <span className="size-1.5 rounded-full bg-violet" aria-hidden="true" />
+              </li>
+            ))}
+          </ul>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function Hero({ settings, work }) {
   const ref = useRef(null)
   const rich = useRichMotion()
-  const large = useMediaQuery('(min-width: 1024px)')
+  const compact = !useMediaQuery('(min-width: 1024px)')
 
-  // Pointer parallax (desktop only) — normalised to -0.5…0.5.
+  // Pointer parallax for the cards (desktop only), normalised to -0.5…0.5.
   const mx = useMotionValue(0)
   const my = useMotionValue(0)
   const sx = useSpring(mx, { stiffness: 50, damping: 18 })
   const sy = useSpring(my, { stiffness: 50, damping: 18 })
-  const rotY = useTransform(sx, [-0.5, 0.5], [-34, -10])
-  const rotX = useTransform(sy, [-0.5, 0.5], [20, 4])
-  const bgX = useTransform(sx, [-0.5, 0.5], [24, -24])
 
-  // As the hero scrolls away, copy lifts and the visual sinks for depth.
+  // As the hero scrolls away the headline lifts and the cards sink, for depth.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
-  const copyY = useTransform(scrollYProgress, [0, 1], [0, -140])
-  const visualY = useTransform(scrollYProgress, [0, 1], [0, 160])
-  const fade = useTransform(scrollYProgress, [0, 0.75], [1, 0])
+  const headY = useTransform(scrollYProgress, [0, 1], [0, -120])
+  const fanY = useTransform(scrollYProgress, [0, 1], [0, 80])
+  const fade = useTransform(scrollYProgress, [0, 0.7], [1, 0])
 
-  const cards = work.filter((w) => w.image).slice(0, 3)
+  // The hero rises over the logo intro, so its entrance plays as it scrolls into view, not on load.
+  const shown = useInView(ref, { once: true, margin: '0px 0px -30% 0px' })
+
+  const cards = work.filter((w) => w.image).slice(0, compact ? 5 : 6)
 
   return (
     <section
       ref={ref}
-      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink text-white"
+      className="relative isolate overflow-hidden bg-black pt-32 text-white sm:pt-40"
       onPointerMove={(e) => {
         if (!rich) return
         mx.set(e.clientX / window.innerWidth - 0.5)
         my.set(e.clientY / window.innerHeight - 0.5)
       }}
     >
-      {/* Background: purple glass render, fine grid and drawn guide lines */}
-      <motion.div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 2.4, ease: 'easeOut', delay: T.bg }}
-      >
-        <motion.img
-          src="/images/glow-wave.webp"
-          alt=""
-          className="absolute right-[-10%] top-0 h-full w-[85%] object-cover opacity-60 [mask-image:linear-gradient(to_left,black_35%,transparent_95%)] lg:w-[70%]"
-          style={{ x: rich ? bgX : 0 }}
-          initial={{ scale: 1.15 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 3.2, ease: EASE }}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:88px_88px] [mask-image:radial-gradient(ellipse_at_30%_40%,black_20%,transparent_75%)]" />
-        <div className="absolute -left-40 top-1/3 size-[36rem] rounded-full bg-violet/20 blur-[140px]" />
-        <motion.span
-          className="absolute left-0 top-[22%] h-px w-full origin-left bg-gradient-to-r from-violet/70 via-white/15 to-transparent"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 2.2, ease: EASE, delay: T.details }}
-        />
-        <motion.span
-          className="absolute bottom-[18%] right-0 h-px w-2/3 origin-right bg-gradient-to-l from-violet/60 to-transparent"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 2.2, ease: EASE, delay: T.details + 0.2 }}
-        />
+      <div aria-hidden="true" className="absolute left-1/2 top-[28%] -z-10 h-[30rem] w-[60rem] max-w-full -translate-x-1/2 rounded-full bg-violet/25 blur-[140px]" />
+
+      <motion.div className="site-container relative z-10" style={{ y: rich ? headY : 0, opacity: fade }}>
+        <motion.p
+          className="eyebrow mb-8 flex items-center justify-center gap-3 text-center text-white/55"
+          initial={{ opacity: 0, y: 14 }}
+          animate={shown ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 1, ease: EASE, delay: T.eyebrow }}
+        >
+          <img src="/images/mark.webp" alt="" className="size-5 rounded-[3px]" />
+          {settings.heroEyebrow}
+        </motion.p>
+        <Headline text={settings.heroTitle} shown={shown} />
       </motion.div>
 
-      <div className="site-container relative flex flex-1 flex-col pt-28 pb-8 md:pt-32">
-        <div className="grid flex-1 items-center gap-10 lg:grid-cols-12">
-          {/* Copy */}
-          <motion.div className="relative z-10 lg:col-span-7" style={{ y: copyY, opacity: fade }}>
-            <motion.div
-              className="mb-8 flex items-center gap-3"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.1, ease: EASE, delay: T.mark }}
-            >
-              <img src="/images/mark.webp" alt="" className="size-7 rounded-[3px]" />
-              <span className="eyebrow text-white/60">{settings.heroEyebrow}</span>
-            </motion.div>
+      {cards.length > 0 && (
+        <motion.div className="relative mt-14 overflow-x-clip px-3 sm:mt-16" style={{ y: rich ? fanY : 0 }}>
+          <CardFan cards={cards} sx={sx} sy={sy} rich={rich} compact={compact} shown={shown} />
+        </motion.div>
+      )}
 
-            <Headline text={settings.heroTitle} />
-
-            <motion.p
-              className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-white/65 md:text-xl"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: EASE, delay: T.copy }}
-            >
-              {settings.heroSubtitle}
-            </motion.p>
-            <motion.div
-              className="mt-10 flex flex-wrap items-center gap-3"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1.2, ease: EASE, delay: T.copy + 0.15 }}
-            >
-              <Magnetic>
-                <Button to="/portfolio" variant="violet">
-                  Explore our work
-                </Button>
-              </Magnetic>
-              <Magnetic>
-                <Button to="/contact" variant="outline-light">
-                  Let’s talk
-                </Button>
-              </Magnetic>
-            </motion.div>
-          </motion.div>
-
-          {/* Visual: the mark, orbit and real work */}
-          <motion.div className="relative mx-auto h-[19rem] w-full max-w-md sm:h-[24rem] lg:col-span-5 lg:h-[34rem] lg:max-w-none" style={{ y: visualY }}>
-            <motion.svg
-              aria-hidden="true"
-              viewBox="0 0 400 400"
-              className="animate-spin-slower absolute left-1/2 top-1/2 size-[115%] -translate-x-1/2 -translate-y-1/2 text-white/15"
-              fill="none"
-            >
-              <motion.ellipse
-                cx="200"
-                cy="200"
-                rx="190"
-                ry="120"
-                stroke="currentColor"
-                strokeDasharray="2 6"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ duration: 2.4, ease: EASE, delay: T.visual }}
-              />
-            </motion.svg>
-            <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
-              <Monolith size={large ? 300 : 170} rotateX={rich ? rotX : 14} rotateY={rich ? rotY : -24} delay={T.visual} />
-            </div>
-            {cards[0] && (
-              <FloatCard src={cards[0].image} label={cards[0].category} depth={36} sx={sx} sy={sy} delay={T.visual + 0.5} className="left-0 top-0 z-0 h-36 w-28 sm:h-44 sm:w-36 lg:-left-20 lg:top-[-4%] lg:h-56 lg:w-44" />
-            )}
-            {cards[1] && (
-              <FloatCard src={cards[1].image} label={cards[1].category} depth={58} sx={sx} sy={sy} delay={T.visual + 0.7} className="bottom-0 right-0 z-20 h-32 w-28 sm:h-40 sm:w-32 lg:h-48 lg:w-40" />
-            )}
-            {cards[2] && (
-              <FloatCard src={cards[2].image} depth={22} sx={sx} sy={sy} delay={T.visual + 0.9} className="right-[4%] top-[2%] z-0 hidden h-28 w-24 opacity-70 lg:block" />
-            )}
-          </motion.div>
-        </div>
-
-        {/* Bottom rail: scroll cue, markets, showreel */}
-        <motion.div
-          className="mt-10 flex items-end justify-between gap-6 border-t border-white/10 pt-6 pr-16 sm:pr-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, delay: T.details }}
+      <div className="site-container relative z-10 mt-14 flex flex-col items-center text-center sm:mt-16">
+        <motion.p
+          className="max-w-2xl text-pretty text-lg leading-relaxed text-white/70 md:text-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={shown ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 1.1, ease: EASE, delay: T.copy }}
         >
-          <a href="#intro" className="group flex items-center gap-3 text-sm text-white/60 hover:text-white">
+          {settings.heroSubtitle}
+        </motion.p>
+        <motion.div
+          className="mt-10 flex flex-wrap items-center justify-center gap-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={shown ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 1.1, ease: EASE, delay: T.copy + 0.12 }}
+        >
+          <Button to="/portfolio" variant="light">
+            Explore our work
+          </Button>
+          <Button to="/contact" variant="outline-light">
+            Let’s talk
+          </Button>
+        </motion.div>
+      </div>
+
+      <motion.div
+        className="mt-20 sm:mt-24"
+        initial={{ opacity: 0 }}
+        animate={shown ? { opacity: 1 } : undefined}
+        transition={{ duration: 1.2, delay: T.rail }}
+      >
+        <Ticker items={settings.markets} />
+        <div className="site-container flex items-center justify-between gap-6 py-6 pr-20">
+          <a href="#intro" className="group flex items-center gap-3 text-sm text-white/55 hover:text-white">
             <span className="relative h-10 w-px overflow-hidden bg-white/15">
               <span className="animate-scroll-cue absolute left-0 top-0 h-3 w-px bg-violet" />
             </span>
             Scroll to explore
           </a>
-          <p className="eyebrow hidden text-white/45 md:block">{settings.markets.join(' · ')}</p>
-          {onShowreel && (
-            <button type="button" onClick={onShowreel} className="group flex items-center gap-3 text-sm font-semibold">
-              <span className="grid size-10 place-items-center rounded-[4px] bg-white/10 transition-colors group-hover:bg-violet">
-                <Play className="size-4" />
-              </span>
-              <span className="hidden sm:inline">Watch showreel</span>
-            </button>
-          )}
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
     </section>
   )
 }

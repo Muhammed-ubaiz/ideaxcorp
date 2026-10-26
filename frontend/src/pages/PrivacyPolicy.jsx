@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
         eyebrow={`Last updated ${formatDate(settings.privacyUpdated, { day: 'numeric', month: 'long', year: 'numeric' })}`}
         title="Privacy policy."
       />
-      <section className="mx-auto max-w-3xl px-5 pb-24 sm:px-8 md:pb-36">
+      <section className="mx-auto max-w-3xl px-5 py-20 sm:px-8 md:py-28">
         <div className="prose-ix" dangerouslySetInnerHTML={{ __html: html }} />
       </section>
     </>

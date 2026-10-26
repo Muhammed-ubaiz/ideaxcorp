@@ -67,30 +67,46 @@
     @apply mx-auto w-full max-w-(--container-site) px-5 sm:px-8 lg:px-12;
   }
 
-  /* Wide, heavy display type — the brand's voice. */
+  /* Heavy, tightly tracked display type — set at normal width for a compact, poster-like voice. */
   .display {
     font-family: var(--font-display);
-    font-stretch: 125%;
+    font-stretch: 100%;
     font-weight: 800;
-    letter-spacing: -0.035em;
-    line-height: 0.92;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
   }
   .display-md {
     font-family: var(--font-display);
-    font-stretch: 115%;
+    font-stretch: 100%;
     font-weight: 700;
-    letter-spacing: -0.025em;
-    line-height: 1.02;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
   }
-  /* Narrow uppercase labels. */
+  /* Small uppercase labels, widely tracked. */
   .eyebrow {
     font-family: var(--font-display);
-    font-stretch: 75%;
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  /* Widely tracked micro-label, e.g. over a section's info column. */
+  .kicker {
+    font-family: var(--font-display);
     font-weight: 600;
     font-size: 0.8125rem;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     line-height: 1.2;
+  }
+
+  /* A phrase set inside a solid rounded box — the inverted highlight used in headlines. */
+  .chip {
+    @apply inline-block rounded-[0.18em] px-[0.18em] pb-[0.04em];
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
   }
 
   .lead {
@@ -255,6 +271,19 @@
 .group:hover .link-underline,
 .group:focus-visible .link-underline {
   background-size: 100% 1px;
+}
+
+/* While the home logo intro fills the screen, the site chrome (navbar, floating buttons) steps aside. */
+[data-chrome] {
+  transition: opacity 0.7s var(--ease-cinema), translate 0.7s var(--ease-cinema), transform 0.5s var(--ease-cinema), visibility 0.7s;
+}
+html[data-intro] [data-chrome] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+html[data-intro] [data-navbar] {
+  translate: 0 -24px;
 }
 
 /* Lenis smooth scrolling */

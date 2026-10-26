@@ -36,7 +36,7 @@ export default function ProjectViewer({ project, onClose }) {
             role="dialog"
             aria-modal="true"
             aria-label={project.title}
-            className="relative mx-auto my-6 w-[calc(100%-2rem)] max-w-5xl rounded-lg bg-white sm:my-12"
+            className="relative mx-auto my-6 w-[calc(100%-2rem)] max-w-5xl rounded-[2rem] bg-white sm:my-12"
             initial={{ y: 60, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
@@ -47,13 +47,13 @@ export default function ProjectViewer({ project, onClose }) {
               type="button"
               onClick={onClose}
               autoFocus
-              className="absolute right-4 top-4 z-10 grid size-11 place-items-center rounded-md bg-ink text-white"
+              className="absolute right-4 top-4 z-10 grid size-12 place-items-center rounded-full bg-ink text-white transition-colors hover:bg-violet sm:right-6 sm:top-6"
               aria-label="Close project"
             >
               <Close className="size-6" />
             </button>
             <div className="p-6 pt-20 sm:p-12">
-              <p className="eyebrow text-violet">{project.category}</p>
+              <p className="inline-flex rounded-full bg-mist px-4 py-2 text-sm font-semibold text-ink">@{project.category}</p>
               <h2 className="display mt-4 text-4xl sm:text-6xl">{project.title}</h2>
               {project.description && <p className="lead mt-6 max-w-2xl">{project.description}</p>}
               <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -71,9 +71,9 @@ export default function ProjectViewer({ project, onClose }) {
             </div>
             <div className="space-y-4 px-4 pb-4 sm:px-6 sm:pb-6">
               {images.length ? (
-                images.map((src) => <img key={src} src={src} alt="" loading="lazy" className="w-full rounded-md" />)
+                images.map((src) => <img key={src} src={src} alt="" loading="lazy" className="w-full rounded-2xl" />)
               ) : (
-                <div className="aspect-[16/9] overflow-hidden rounded-md">
+                <div className="aspect-[16/9] overflow-hidden rounded-2xl">
                   <ProjectPlaceholder project={project} />
                 </div>
               )}

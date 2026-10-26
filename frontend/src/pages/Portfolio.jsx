@@ -29,8 +29,8 @@ export default function Portfolio() {
         intro="We craft powerful websites and digital solutions that help brands grow, engage and convert."
       />
 
-      <section className="site-container pb-24 md:pb-36">
-        <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter projects">
+      <section className="site-container py-20 md:py-28">
+        <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0" role="group" aria-label="Filter projects">
           {categories.map((c) => (
             <button
               key={c}
@@ -38,7 +38,7 @@ export default function Portfolio() {
               onClick={() => setFilter(c)}
               aria-pressed={filter === c}
               className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-300 ${
-                filter === c ? 'bg-ink text-white' : 'bg-mist text-ink hover:bg-lilac'
+                filter === c ? 'bg-ink text-white' : 'border border-ink/15 text-ink hover:border-ink'
               }`}
             >
               {c}
@@ -48,7 +48,7 @@ export default function Portfolio() {
 
         <div className="mt-12">
           {loading ? (
-            <GridSkeleton className="aspect-[4/5]" />
+            <GridSkeleton className="aspect-[5/4] rounded-3xl" />
           ) : (
             <motion.div layout className="grid gap-x-8 gap-y-16 md:grid-cols-2">
               <AnimatePresence mode="popLayout">
@@ -71,7 +71,7 @@ export default function Portfolio() {
         </div>
 
         {settings.portfolioDriveUrl && (
-          <div className="mt-24 flex flex-col items-start gap-6 border-t border-line pt-10 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-24 flex flex-col items-start gap-6 rounded-3xl bg-mist p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
             <p className="display-md text-2xl sm:text-3xl">There’s more where this came from.</p>
             <Button href={settings.portfolioDriveUrl}>View more work on Drive</Button>
           </div>

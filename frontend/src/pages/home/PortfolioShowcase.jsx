@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { motion, useReducedMotion } from 'motion/react'
 import Button from '../../components/Button'
-import ArrowTile from '../../components/ArrowTile'
+import { ArrowUpRight } from '../../components/Icons'
 import { ProjectPlaceholder } from '../../components/PortfolioCard'
 import { Skeleton } from '../../components/Skeleton'
 import { EASE, Reveal, RevealLines } from '../../components/Reveal'
@@ -16,12 +16,12 @@ function pickHomeProjects(projects) {
   return [...featured, ...others].slice(0, HOME_COUNT)
 }
 
+/** Large rounded project card: the frame opens upward, the image settles, and the category rides on a pill. */
 function ProjectCard({ project, index, onOpen }) {
   const reduced = useReducedMotion()
-  const delay = (index % HOME_COUNT) * 0.12
+  const delay = (index % 2) * 0.12
   return (
     <motion.article
-      className={index % 2 === 1 ? 'lg:mt-20' : ''}
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={VIEW}
@@ -29,15 +29,15 @@ function ProjectCard({ project, index, onOpen }) {
     >
       <button type="button" onClick={() => onOpen(project)} className="group block w-full text-left" aria-label={`View ${project.title}`}>
         <motion.div
-          className="relative aspect-[4/5] overflow-hidden rounded-lg bg-mist shadow-[0_30px_60px_-36px_rgba(14,11,18,0.45)] ring-1 ring-line"
-          initial={reduced ? false : { clipPath: 'inset(100% 0% 0% 0%)' }}
-          whileInView={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+          className="relative aspect-[5/4] overflow-hidden rounded-3xl bg-mist ring-1 ring-ink/10"
+          initial={reduced ? false : { clipPath: 'inset(100% 0% 0% 0% round 1.5rem)' }}
+          whileInView={{ clipPath: 'inset(0% 0% 0% 0% round 1.5rem)' }}
           viewport={VIEW}
           transition={{ duration: 1.4, ease: EASE, delay }}
         >
           <motion.div
             className="size-full"
-            initial={reduced ? false : { scale: 1.18 }}
+            initial={reduced ? false : { scale: 1.15 }}
             whileInView={{ scale: 1 }}
             viewport={VIEW}
             transition={{ duration: 1.8, ease: EASE, delay }}
@@ -47,20 +47,23 @@ function ProjectCard({ project, index, onOpen }) {
                 src={project.image}
                 alt={project.title}
                 loading="lazy"
-                className="size-full object-cover object-top transition-transform duration-[1.6s] ease-cinema group-hover:scale-[1.06]"
+                className="size-full object-cover object-top transition-transform duration-[1.6s] ease-cinema group-hover:scale-[1.05]"
               />
             ) : (
               <ProjectPlaceholder project={project} />
             )}
           </motion.div>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/55 via-transparent to-transparent opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-          <span className="absolute bottom-4 right-4 translate-y-3 opacity-0 transition-all duration-500 ease-cinema group-hover:translate-y-0 group-hover:opacity-100">
-            <ArrowTile tone="white" />
-          </span>
+          {project.category && (
+            <span className="absolute left-4 top-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-ink backdrop-blur sm:left-5 sm:top-5">
+              @{project.category}
+            </span>
+          )}
         </motion.div>
-        <div className="mt-5">
-          <p className="eyebrow text-violet">{project.category}</p>
-          <h3 className="display-md mt-2 text-xl transition-colors duration-500 group-hover:text-violet sm:text-[1.45rem]">{project.title}</h3>
+        <div className="mt-6 flex items-start justify-between gap-6">
+          <h3 className="display-md text-2xl transition-colors duration-500 group-hover:text-violet sm:text-[1.9rem]">{project.title}</h3>
+          <span className="grid size-12 shrink-0 place-items-center rounded-full border border-ink/15 transition-colors duration-500 group-hover:border-ink group-hover:bg-ink group-hover:text-white">
+            <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </span>
         </div>
       </button>
     </motion.article>
@@ -71,34 +74,31 @@ export default function PortfolioShowcase({ projects, loading, onOpen }) {
   const shown = pickHomeProjects(projects)
 
   return (
-    <section className="relative bg-paper py-28 md:py-40">
+    <section className="relative bg-white py-28 md:py-40">
       <div className="site-container">
-        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <Reveal as="p" y={12} className="eyebrow mb-8 flex items-center gap-3 text-graphite">
-              <span className="inline-block size-2 bg-violet" aria-hidden="true" />
-              Our portfolio
-            </Reveal>
-            <RevealLines lines={['Selected', 'work']} className="display text-[3.4rem] leading-[0.9] sm:text-8xl lg:text-[8rem]" />
-          </div>
-          <Reveal delay={0.15} as="p" className="lead max-w-md">
+        <div className="flex flex-col items-center text-center">
+          <Reveal as="p" y={12} className="kicker mb-8 flex items-center gap-3 text-graphite">
+            <span className="inline-block size-1.5 rounded-full bg-violet" aria-hidden="true" />
+            Our portfolio
+          </Reveal>
+          <RevealLines lines={['Selected work']} className="display text-[3.4rem] leading-[0.95] sm:text-8xl lg:text-[8rem]" />
+          <Reveal delay={0.15} as="p" className="lead mt-8 max-w-xl">
             Where creativity, technology, and strategy come together to deliver impactful digital solutions for businesses.
           </Reveal>
         </div>
 
-        <div className="mt-16 md:mt-20">
+        <div className="mt-16 md:mt-24">
           {loading ? (
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4" aria-busy="true">
+            <div className="grid gap-x-8 gap-y-14 md:grid-cols-2" aria-busy="true">
               {Array.from({ length: HOME_COUNT }, (_, i) => (
-                <div key={i} className={i % 2 === 1 ? 'lg:mt-20' : ''}>
-                  <Skeleton className="aspect-[4/5]" />
-                  <Skeleton className="mt-5 h-3 w-24" />
-                  <Skeleton className="mt-3 h-6 w-3/4" />
+                <div key={i}>
+                  <Skeleton className="aspect-[5/4] rounded-3xl" />
+                  <Skeleton className="mt-6 h-7 w-2/3" />
                 </div>
               ))}
             </div>
           ) : shown.length === 0 ? (
-            <div className="rounded-lg border border-line px-6 py-14 text-center">
+            <div className="rounded-3xl border border-line px-6 py-14 text-center">
               <p className="display-md text-2xl">New work is on its way.</p>
               <p className="mt-2 text-graphite">
                 Meanwhile, see what we do on the{' '}
@@ -109,9 +109,11 @@ export default function PortfolioShowcase({ projects, loading, onOpen }) {
               </p>
             </div>
           ) : (
-            <div className="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-x-8 gap-y-14 md:grid-cols-2 md:gap-y-20">
               {shown.map((p, i) => (
-                <ProjectCard key={p.id} project={p} index={i} onOpen={onOpen} />
+                <div key={p.id} className={i % 2 === 1 ? 'md:mt-24' : ''}>
+                  <ProjectCard project={p} index={i} onOpen={onOpen} />
+                </div>
               ))}
             </div>
           )}

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Meta from '../components/Meta'
+import LogoIntro from '../components/LogoIntro'
 import ProjectViewer from '../components/ProjectViewer'
 import ScrollProgress from '../components/motion/ScrollProgress'
 import { useCollection, useSettings } from '../hooks/useContent'
@@ -13,7 +14,6 @@ import Stats from './home/Stats'
 import TestimonialsShowcase from './home/TestimonialsShowcase'
 import Insights from './home/Insights'
 import FinalCta from './home/FinalCta'
-import ShowreelModal from './home/ShowreelModal'
 
 export default function Home() {
   const settings = useSettings()
@@ -22,25 +22,25 @@ export default function Home() {
   const testimonials = useCollection('testimonials')
   const blogs = useCollection('blogs')
   const [project, setProject] = useState(null)
-  const [showreel, setShowreel] = useState(false)
 
   return (
     <>
       <Meta description={settings.introText || settings.heroSubtitle} />
       <ScrollProgress />
-      <Hero settings={settings} work={portfolio.data} onShowreel={settings.showreelUrl ? () => setShowreel(true) : null} />
+      <LogoIntro>
+        <Hero settings={settings} work={portfolio.data} />
+      </LogoIntro>
       <BrandIntro settings={settings} />
       {services.data.length > 0 && <ServicesShowcase services={services.data} />}
       <PortfolioShowcase projects={portfolio.data} loading={portfolio.loading} onOpen={setProject} />
       <Statement />
       <AboutFounder settings={settings} />
-      <Stats settings={settings} serviceCount={services.data.length} />
+      <Stats settings={settings} serviceCount={services.data.length} serviceTitles={services.data.map((s) => s.title)} />
       <TestimonialsShowcase items={testimonials.data} />
       <Insights posts={blogs.data} loading={blogs.loading} />
       <FinalCta settings={settings} />
 
       <ProjectViewer project={project} onClose={() => setProject(null)} />
-      <ShowreelModal url={settings.showreelUrl} open={showreel} onClose={() => setShowreel(false)} />
     </>
   )
 }

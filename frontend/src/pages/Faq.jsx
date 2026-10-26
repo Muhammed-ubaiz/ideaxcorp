@@ -16,15 +16,15 @@ export default function Faq() {
         title={['Frequently asked', 'questions.']}
         intro="Got questions? Explore our FAQs to learn more about our services and how we work."
       />
-      <section className="site-container grid gap-14 pb-24 md:pb-36 lg:grid-cols-12">
+      <section className="site-container grid gap-14 py-20 md:py-28 lg:grid-cols-12">
         <div className="lg:col-span-8">
           {loading ? <Skeleton className="h-96" /> : <FaqAccordion items={data} />}
         </div>
         <Reveal delay={0.15} className="lg:col-span-4">
-          <div className="rounded-lg bg-mist p-8 lg:sticky lg:top-32">
+          <div className="rounded-3xl bg-black p-8 text-white sm:p-10 lg:sticky lg:top-28">
             <h2 className="display-md text-3xl">Still have a question?</h2>
-            <p className="mt-4 text-graphite">Tell us about your business and we’ll recommend a strategy tailored to your needs.</p>
-            <Button to="/contact" className="mt-8">
+            <p className="mt-4 text-white/65">Tell us about your business and we’ll recommend a strategy tailored to your needs.</p>
+            <Button to="/contact" variant="light" className="mt-8">
               Contact us
             </Button>
           </div>

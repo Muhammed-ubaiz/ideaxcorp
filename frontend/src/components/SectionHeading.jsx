@@ -12,7 +12,7 @@ export default function SectionHeading({ eyebrow, title, description, action, da
       <div className={align === 'center' ? 'max-w-4xl' : 'max-w-5xl'}>
         {eyebrow && (
           <Reveal as="p" y={12} className={`eyebrow mb-6 flex items-center gap-3 ${align === 'center' ? 'justify-center' : ''} ${dark ? 'text-white/60' : 'text-graphite'}`}>
-            <span className="inline-block size-2 bg-violet" aria-hidden="true" />
+            <span className="inline-block size-1.5 rounded-full bg-violet" aria-hidden="true" />
             {eyebrow}
           </Reveal>
         )}

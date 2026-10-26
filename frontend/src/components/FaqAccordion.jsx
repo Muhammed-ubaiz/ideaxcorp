@@ -21,10 +21,10 @@ export default function FaqAccordion({ items, dark = false }) {
                 onClick={() => setOpen(isOpen ? -1 : i)}
                 className="group flex w-full items-start justify-between gap-6 py-6 text-left md:py-7"
               >
-                <span className={`display-md text-xl sm:text-2xl ${dark ? 'text-white' : 'text-ink'}`}>{f.question}</span>
+                <span className={`display-md text-xl transition-colors group-hover:text-violet sm:text-2xl ${dark ? 'text-white' : 'text-ink'}`}>{f.question}</span>
                 <span
-                  className={`mt-0.5 grid size-9 shrink-0 place-items-center rounded-[4px] transition-[background-color,transform] duration-500 ease-cinema ${
-                    isOpen ? 'rotate-45 bg-violet text-white' : dark ? 'bg-white/10 text-white' : 'bg-mist text-ink group-hover:bg-lilac'
+                  className={`mt-0.5 grid size-10 shrink-0 place-items-center rounded-full transition-[background-color,transform] duration-500 ease-cinema ${
+                    isOpen ? 'rotate-45 bg-ink text-white' : dark ? 'bg-white/10 text-white' : 'border border-ink/15 text-ink group-hover:border-ink'
                   }`}
                 >
                   <Plus />

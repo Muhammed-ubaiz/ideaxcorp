@@ -30,7 +30,7 @@ function Share({ title }) {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Share on ${label}`}
-          className="grid size-10 place-items-center rounded-md bg-mist text-ink transition-colors hover:bg-violet hover:text-white"
+          className="grid size-11 place-items-center rounded-full border border-ink/15 text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
         >
           <Icon className="size-[1.1rem]" />
         </a>
@@ -38,7 +38,7 @@ function Share({ title }) {
       <button
         type="button"
         onClick={() => navigator.clipboard?.writeText(url).then(() => setCopied(true))}
-        className="h-10 rounded-md bg-mist px-4 text-sm font-semibold transition-colors hover:bg-lilac"
+        className="h-11 rounded-full border border-ink/15 px-5 text-sm font-semibold transition-colors hover:border-ink"
       >
         {copied ? 'Link copied' : 'Copy link'}
       </button>
@@ -73,8 +73,8 @@ export default function BlogDetails() {
       <motion.div aria-hidden="true" className="fixed inset-x-0 top-0 z-[55] h-[3px] origin-left bg-violet" style={{ scaleX: progress }} />
 
       <article>
-        <header className="mx-auto max-w-4xl px-5 pt-36 sm:px-8 md:pt-44">
-          <Link to="/blog" className="eyebrow inline-flex items-center gap-2 text-graphite hover:text-ink">
+        <header className="mx-auto max-w-4xl px-5 pt-36 text-center sm:px-8 md:pt-44">
+          <Link to="/blog" className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink">
             <ArrowLeft className="size-4" /> All articles
           </Link>
           <motion.h1
@@ -86,7 +86,7 @@ export default function BlogDetails() {
             {post.title}
           </motion.h1>
           <motion.p
-            className="eyebrow mt-8 flex flex-wrap gap-x-4 gap-y-1 text-graphite"
+            className="eyebrow mt-8 flex flex-wrap justify-center gap-x-4 gap-y-1 text-graphite"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
@@ -104,7 +104,7 @@ export default function BlogDetails() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.3, ease: EASE, delay: 0.35 }}
           >
-            <img src={post.coverImage} alt="" className="max-h-[42rem] w-full rounded-lg bg-mist object-cover" />
+            <img src={post.coverImage} alt="" className="max-h-[42rem] w-full rounded-3xl bg-mist object-cover" />
           </motion.div>
         )}
 
@@ -117,9 +117,9 @@ export default function BlogDetails() {
       </article>
 
       {related.length > 0 && (
-        <section className="border-t border-line bg-mist py-24 md:py-32">
+        <section className="bg-mist py-24 md:py-32">
           <div className="site-container">
-            <h2 className="display-md text-4xl sm:text-5xl">Keep reading</h2>
+            <h2 className="display text-5xl sm:text-6xl">Keep reading</h2>
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p, i) => (
                 <Reveal key={p.id} delay={i * 0.08}>

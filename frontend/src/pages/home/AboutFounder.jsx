@@ -79,7 +79,7 @@ function Portrait({ src, name, role }) {
       </div>
 
       <motion.figcaption
-        className="absolute bottom-8 left-3 rounded-md bg-white/95 px-5 py-3.5 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.3)] ring-1 ring-neutral-200 backdrop-blur sm:-left-5 lg:-left-8"
+        className="absolute bottom-8 left-3 rounded-2xl bg-white/95 px-5 py-3.5 shadow-[0_24px_48px_-28px_rgba(0,0,0,0.3)] ring-1 ring-neutral-200 backdrop-blur sm:-left-5 lg:-left-8"
         initial={reduced ? false : { opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEW}
@@ -95,7 +95,7 @@ function Portrait({ src, name, role }) {
 export default function AboutFounder({ settings }) {
   const note = paragraphs(settings.founderNote)
   return (
-    <section className="relative overflow-hidden bg-[#f6f6f4] py-24 text-neutral-950 md:py-36" aria-label="Founder’s note">
+    <section className="relative overflow-hidden bg-[#f4f4f2] py-24 text-neutral-950 md:py-36" aria-label="Founder’s note">
       {/* oversized neutral quote mark for editorial texture */}
       <span aria-hidden="true" className="display pointer-events-none absolute -top-10 right-[4%] select-none text-[18rem] leading-none text-neutral-200 md:text-[26rem]">
         “
@@ -107,7 +107,7 @@ export default function AboutFounder({ settings }) {
         </div>
 
         <div className="lg:col-span-6 lg:col-start-7">
-          <Reveal as="p" y={12} className="eyebrow mb-8 flex items-center gap-3 text-neutral-500">
+          <Reveal as="p" y={12} className="kicker mb-8 flex items-center gap-3 text-neutral-500">
             <motion.span
               aria-hidden="true"
               className="inline-block h-px w-10 origin-left bg-neutral-900"
@@ -139,7 +139,7 @@ export default function AboutFounder({ settings }) {
             </div>
             <Link to="/about" className="group inline-flex items-center gap-4 font-semibold text-neutral-950">
               <span className="link-underline">More about Ideaxcorp</span>
-              <span className="grid size-10 place-items-center rounded-[4px] bg-neutral-950 text-white transition-colors duration-500 group-hover:bg-neutral-700">
+              <span className="grid size-12 place-items-center rounded-full bg-neutral-950 text-white transition-colors duration-500 group-hover:bg-neutral-700">
                 <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </span>
             </Link>

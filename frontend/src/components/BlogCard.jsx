@@ -20,24 +20,33 @@ export function BlogCover({ post, className = '' }) {
   )
 }
 
+/** Thumbnail with a category pill, then the headline and date — the reference's insight card. */
 export default function BlogCard({ post, large = false }) {
   return (
     <Link to={`/blog/${post.slug}`} className="group block">
-      <div className={`overflow-hidden rounded-lg bg-mist ${large ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+      <div className={`relative overflow-hidden rounded-3xl bg-mist ${large ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
         <BlogCover post={post} />
+        {post.category && (
+          <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-ink backdrop-blur">{post.category}</span>
+        )}
       </div>
-      <p className="eyebrow mt-6 flex flex-wrap gap-x-3 text-graphite">
-        <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-        {post.readingTime ? <span>· {post.readingTime} min read</span> : null}
-      </p>
       <h3
-        className={`display-md mt-3 text-balance text-ink decoration-violet decoration-2 underline-offset-[6px] group-hover:underline ${
-          large ? 'text-3xl sm:text-[2.4rem]' : 'text-xl sm:text-[1.45rem]'
+        className={`mt-5 text-balance font-semibold leading-snug tracking-tight text-ink transition-colors duration-500 group-hover:text-violet ${
+          large ? 'text-3xl sm:text-[2.4rem] sm:leading-tight' : 'text-xl sm:text-[1.35rem]'
         }`}
       >
         {post.title}
       </h3>
       {post.excerpt && <p className={`mt-3 text-graphite ${large ? 'line-clamp-3 text-lg' : 'line-clamp-2'}`}>{post.excerpt}</p>}
+      <p className="mt-4 flex flex-wrap items-center gap-x-3 text-sm text-smoke">
+        <time dateTime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
+        {post.readingTime ? (
+          <>
+            <span className="size-1 rounded-full bg-current opacity-50" aria-hidden="true" />
+            <span>{post.readingTime} min read</span>
+          </>
+        ) : null}
+      </p>
     </Link>
   )
 }

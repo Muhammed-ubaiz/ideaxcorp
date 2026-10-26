@@ -1,28 +1,31 @@
 import { Link } from 'react-router'
-import ArrowTile from './ArrowTile'
+import { ArrowRight } from './Icons'
 
 const VARIANTS = {
-  // dark button + violet tile: the default call to action on light backgrounds
-  primary: { box: 'bg-ink text-white hover:bg-ink-2', tile: 'violet' },
-  violet: { box: 'bg-violet text-white hover:bg-violet-deep', tile: 'ink' },
-  light: { box: 'bg-white text-ink hover:bg-lilac', tile: 'violet' },
-  outline: { box: 'border border-ink/15 text-ink hover:border-ink', tile: 'ink' },
-  'outline-light': { box: 'border border-white/25 text-white hover:border-white', tile: 'white' },
+  // solid ink pill: the default call to action on light backgrounds
+  primary: 'bg-ink text-white hover:bg-violet',
+  violet: 'bg-violet text-white hover:bg-violet-deep',
+  light: 'bg-white text-ink hover:bg-lilac',
+  outline: 'border border-ink text-ink hover:bg-ink hover:text-white',
+  'outline-light': 'border border-white/70 text-white hover:border-white hover:bg-white hover:text-ink',
 }
 
 /**
- * Renders a router Link (`to`), an anchor (`href`) or a button.
- * Set `arrow={false}` for a plain text button.
+ * Rounded pill button. Renders a router Link (`to`), an anchor (`href`) or a button.
+ * The trailing arrow nudges forward on hover; set `arrow={false}` for a plain text button.
  */
 export default function Button({ to, href, variant = 'primary', arrow = true, size = 'md', className = '', children, ...props }) {
-  const v = VARIANTS[variant]
-  const pad = arrow ? (size === 'sm' ? 'pl-4 pr-1' : 'pl-6 pr-1.5') : size === 'sm' ? 'px-4' : 'px-6'
-  const h = size === 'sm' ? 'h-10 text-sm' : 'h-[3.25rem] text-[0.95rem]'
-  const cls = `group inline-flex items-center justify-between gap-4 rounded-md font-semibold tracking-tight transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50 ${h} ${pad} ${v.box} ${className}`
+  const h = size === 'sm' ? 'h-10 px-5 text-sm' : 'h-14 px-8 text-base'
+  const cls = `group inline-flex items-center justify-center gap-3 rounded-full font-semibold tracking-tight transition-colors duration-500 ease-cinema disabled:pointer-events-none disabled:opacity-50 ${h} ${VARIANTS[variant]} ${className}`
   const content = (
     <>
       <span>{children}</span>
-      {arrow && <ArrowTile size={size === 'sm' ? 'sm' : 'md'} tone={v.tile} />}
+      {arrow && (
+        <ArrowRight
+          aria-hidden="true"
+          className={`${size === 'sm' ? 'size-4' : 'size-5'} transition-transform duration-500 ease-cinema group-hover:translate-x-1`}
+        />
+      )}
     </>
   )
   if (to) {

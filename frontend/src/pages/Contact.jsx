@@ -27,7 +27,7 @@ function matchSubject(raw = '') {
 function InfoRow({ icon: Icon, label, children }) {
   return (
     <div className="flex gap-4">
-      <span className="grid size-11 shrink-0 place-items-center rounded-md bg-white/[0.07] text-lilac">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white/[0.08] text-white">
         <Icon />
       </span>
       <div>
@@ -52,13 +52,13 @@ export default function Contact() {
         intro="Whether you’ve got a burning question, a big idea, or just want to say hi — we’re ready."
       />
 
-      <section className="site-container grid gap-16 pb-24 md:pb-36 lg:grid-cols-12 lg:gap-12">
+      <section className="site-container grid gap-16 py-20 md:py-28 lg:grid-cols-12 lg:gap-12">
         <Reveal className="lg:col-span-7">
           <ContactForm key={subject} defaultSubject={subject} />
         </Reveal>
 
         <Reveal delay={0.15} className="lg:col-span-5">
-          <div className="space-y-8 rounded-lg bg-ink p-8 sm:p-10">
+          <div className="space-y-8 rounded-3xl bg-black p-8 text-white sm:p-10">
             <InfoRow icon={Mail} label="Email us">
               <a href={`mailto:${settings.email}`} className="hover:text-lilac">
                 {settings.email}
@@ -81,7 +81,7 @@ export default function Contact() {
           </div>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
             {settings.offices.map((o) => (
-              <div key={o.label} className="flex gap-4 rounded-lg bg-mist p-6">
+              <div key={o.label} className="flex gap-4 rounded-3xl bg-mist p-6 sm:p-8">
                 <MapPin className="mt-0.5 size-5 shrink-0 text-violet" />
                 <div>
                   <p className="font-semibold">{o.label}</p>
@@ -90,7 +90,7 @@ export default function Contact() {
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(o.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 inline-block text-sm font-semibold text-violet hover:underline"
+                    className="mt-4 inline-flex rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
                   >
                     Open in Google Maps
                   </a>

@@ -24,8 +24,11 @@ export default function Footer() {
   ].filter(([key]) => settings.socials?.[key])
 
   return (
-    <footer className="bg-ink text-white">
-      <div className="site-container grid gap-14 pt-20 pb-12 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+    <footer className="bg-black text-white">
+      <div className="site-container">
+        <div className="h-px bg-white/15" />
+      </div>
+      <div className="site-container grid gap-14 pt-16 pb-14 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-4">
           <Logo light className="h-11 w-auto" />
           <p className="mt-6 max-w-sm text-white/60">{settings.tagline}</p>
@@ -37,7 +40,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="grid size-11 place-items-center rounded-md bg-white/[0.06] text-white/80 transition-colors hover:bg-violet hover:text-white"
+                  className="grid size-12 place-items-center rounded-full border border-white/15 text-white/80 transition-colors duration-500 hover:border-white hover:bg-white hover:text-ink"
                 >
                   <Icon />
                 </a>
@@ -47,7 +50,7 @@ export default function Footer() {
         </div>
 
         <div className="lg:col-span-3">
-          <h2 className="eyebrow text-white/45">Services</h2>
+          <h2 className="kicker text-[0.72rem] text-white/45">Services</h2>
           <ul className="mt-5 space-y-3">
             {services.map((s) => (
               <li key={s.id}>
@@ -60,7 +63,7 @@ export default function Footer() {
         </div>
 
         <div className="lg:col-span-2">
-          <h2 className="eyebrow text-white/45">Company</h2>
+          <h2 className="kicker text-[0.72rem] text-white/45">Company</h2>
           <ul className="mt-5 space-y-3">
             {COMPANY.map((l) => (
               <li key={l.to}>
@@ -73,11 +76,11 @@ export default function Footer() {
         </div>
 
         <div className="lg:col-span-3">
-          <h2 className="eyebrow text-white/45">Get in touch</h2>
-          <a href={`mailto:${settings.email}`} className="link-underline mt-5 block w-fit text-lg font-medium hover:text-lilac">
+          <h2 className="kicker text-[0.72rem] text-white/45">Get in touch</h2>
+          <a href={`mailto:${settings.email}`} className="link-underline mt-5 block w-fit text-lg font-medium hover:text-white/70">
             {settings.email}
           </a>
-          <a href={telHref(settings.phone)} className="link-underline mt-1 block w-fit text-lg font-medium hover:text-lilac">
+          <a href={telHref(settings.phone)} className="link-underline mt-1 block w-fit text-lg font-medium hover:text-white/70">
             {settings.phone}
           </a>
           <div className="mt-6 space-y-4 text-sm text-white/60">

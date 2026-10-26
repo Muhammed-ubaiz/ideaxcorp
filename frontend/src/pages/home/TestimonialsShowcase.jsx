@@ -9,9 +9,9 @@ const pad = (n) => String(n).padStart(2, '0')
 
 function Avatar({ person }) {
   return person.image ? (
-    <img src={person.image} alt="" width="48" height="48" className="size-12 rounded-[4px] object-cover" />
+    <img src={person.image} alt="" width="56" height="56" className="size-14 rounded-full object-cover" />
   ) : (
-    <span className="grid size-12 place-items-center rounded-[4px] bg-lilac text-sm font-semibold text-violet-deep">{initials(person.name)}</span>
+    <span className="grid size-14 place-items-center rounded-full bg-lilac text-sm font-semibold text-violet-deep">{initials(person.name)}</span>
   )
 }
 
@@ -46,7 +46,7 @@ function Carousel({ items }) {
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden bg-mist py-20 md:py-24"
+      className="relative overflow-hidden bg-white py-28 md:py-36"
       aria-roledescription="carousel"
       aria-label="Client success stories"
       onMouseEnter={() => setHovered(true)}
@@ -54,18 +54,20 @@ function Carousel({ items }) {
       onFocus={() => setFocused(true)}
       onBlur={(e) => !e.currentTarget.contains(e.relatedTarget) && setFocused(false)}
     >
-      <Quote className="animate-float-slow pointer-events-none absolute -right-6 -top-4 size-56 text-violet/[0.07] md:size-72" />
       <div className="site-container relative">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <Reveal as="h2" y={14} className="display-md text-3xl sm:text-4xl">
-            Success stories
-          </Reveal>
-          <Reveal as="p" y={12} delay={0.1} className="eyebrow text-graphite">
+        <div className="flex flex-col items-center text-center">
+          <Reveal as="p" y={12} className="kicker flex items-center gap-3 text-graphite">
+            <span className="inline-block size-1.5 rounded-full bg-violet" aria-hidden="true" />
             From businesses like yours
+          </Reveal>
+          <Reveal as="h2" y={14} delay={0.1} className="display mt-6 text-[2.8rem] sm:text-7xl lg:text-[6rem]">
+            Success <span className="chip bg-ink text-white">stories</span>
           </Reveal>
         </div>
 
-        <div className="mt-10 grid min-h-[17rem] items-start sm:min-h-[13rem] md:min-h-[11rem]" aria-live={running ? 'off' : 'polite'}>
+        <div className="relative mx-auto mt-14 max-w-5xl rounded-[2rem] bg-mist px-6 py-12 sm:px-12 sm:py-16 md:mt-20">
+        <Quote className="pointer-events-none absolute right-6 top-6 size-16 text-violet/20 sm:right-10 sm:top-10 sm:size-24" />
+        <div className="relative grid min-h-[19rem] items-start sm:min-h-[15rem] md:min-h-[13rem]" aria-live={running ? 'off' : 'polite'}>
           <AnimatePresence mode="wait" custom={dir} initial={false}>
             <motion.figure
               key={i}
@@ -79,12 +81,12 @@ function Carousel({ items }) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.7, ease: EASE }}
-              className="col-start-1 row-start-1 grid gap-8 md:grid-cols-[1fr_auto] md:items-end"
+              className="col-start-1 row-start-1 grid gap-10"
               aria-roledescription="slide"
               aria-label={`${i + 1} of ${count}`}
             >
-              <blockquote className="display-md max-w-4xl text-pretty text-xl leading-snug sm:text-2xl lg:text-[1.85rem] lg:leading-[1.3]">“{t.quote}”</blockquote>
-              <figcaption className="flex items-center gap-4 md:min-w-[16rem] md:justify-end">
+              <blockquote className="display-md max-w-4xl pr-10 text-pretty sm:pr-24 text-xl leading-snug sm:text-2xl lg:text-[2rem] lg:leading-[1.3]">“{t.quote}”</blockquote>
+              <figcaption className="flex items-center gap-4">
                 <Avatar person={t} />
                 <span>
                   <span className="block font-semibold">{t.name}</span>
@@ -95,7 +97,7 @@ function Carousel({ items }) {
           </AnimatePresence>
         </div>
 
-        <div className="mt-8 flex items-center gap-4 border-t border-line pt-5">
+        <div className="mt-10 flex items-center gap-4 border-t border-ink/10 pt-6">
           <p className="eyebrow shrink-0 text-graphite">
             <span className="text-ink">{pad(i + 1)}</span> / {pad(count)}
           </p>
@@ -116,19 +118,20 @@ function Carousel({ items }) {
                   type="button"
                   onClick={() => setPaused((p) => !p)}
                   aria-label={paused ? 'Play success stories' : 'Pause success stories'}
-                  className="grid size-11 place-items-center rounded-md border border-ink/15 text-xs font-semibold transition-colors hover:border-ink"
+                  className="grid size-12 place-items-center rounded-full border border-ink/15 text-xs font-semibold transition-colors hover:border-ink"
                 >
                   {paused ? '▶' : '❚❚'}
                 </button>
               )}
-              <button type="button" onClick={() => go(-1)} aria-label="Previous story" className="grid size-11 place-items-center rounded-md border border-ink/15 transition-colors hover:border-ink hover:bg-ink hover:text-white">
+              <button type="button" onClick={() => go(-1)} aria-label="Previous story" className="grid size-12 place-items-center rounded-full border border-ink/15 transition-colors hover:border-ink hover:bg-ink hover:text-white">
                 <ArrowLeft />
               </button>
-              <button type="button" onClick={() => go(1)} aria-label="Next story" className="grid size-11 place-items-center rounded-md bg-ink text-white transition-colors hover:bg-violet">
+              <button type="button" onClick={() => go(1)} aria-label="Next story" className="grid size-12 place-items-center rounded-full bg-ink text-white transition-colors hover:bg-violet">
                 <ArrowRight />
               </button>
             </div>
           )}
+        </div>
         </div>
       </div>
     </section>
