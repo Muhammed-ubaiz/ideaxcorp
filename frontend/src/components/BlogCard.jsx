@@ -24,15 +24,15 @@ export function BlogCover({ post, className = '' }) {
 export default function BlogCard({ post, large = false }) {
   return (
     <Link to={`/blog/${post.slug}`} className="group block">
-      <div className={`relative overflow-hidden rounded-3xl bg-mist ${large ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
+      <div className={`relative overflow-hidden rounded-[1.25rem] bg-mist ${large ? 'aspect-[16/10]' : 'aspect-[4/3]'}`}>
         <BlogCover post={post} />
         {post.category && (
           <span className="absolute left-4 top-4 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-semibold text-ink backdrop-blur">{post.category}</span>
         )}
       </div>
       <h3
-        className={`mt-5 text-balance font-semibold leading-snug tracking-tight text-ink transition-colors duration-500 group-hover:text-violet ${
-          large ? 'text-3xl sm:text-[2.4rem] sm:leading-tight' : 'text-xl sm:text-[1.35rem]'
+        className={`display-md mt-6 text-balance text-ink transition-colors duration-500 group-hover:text-violet ${
+          large ? 'text-3xl sm:text-[2.4rem]' : 'text-[1.4rem] sm:text-[1.6rem]'
         }`}
       >
         {post.title}

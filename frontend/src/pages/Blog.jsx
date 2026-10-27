@@ -32,7 +32,7 @@ export default function Blog() {
         title="Hear from us."
         intro="Insights, tips, and industry updates on digital marketing, web development, and online business growth."
       >
-        <label className="mt-12 flex w-full max-w-md items-center gap-3 rounded-full border border-white/25 bg-white/[0.06] px-6 transition-colors focus-within:border-white">
+        <label className="flex w-full max-w-md items-center gap-3 rounded-full border border-ink/20 bg-white/60 px-6 transition-colors focus-within:border-ink">
           <span className="sr-only">Search articles</span>
           <input
             type="search"
@@ -42,14 +42,14 @@ export default function Blog() {
               setShown(PAGE)
             }}
             placeholder="Search articles"
-            className="w-full bg-transparent py-3.5 text-lg text-white outline-none placeholder:text-white/45"
+            className="w-full bg-transparent py-3.5 text-lg text-ink outline-none placeholder:text-smoke"
           />
         </label>
       </PageHero>
 
       <section className="site-container py-20 md:py-28">
         {loading ? (
-          <GridSkeleton count={6} className="aspect-[4/3] rounded-3xl" />
+          <GridSkeleton count={6} className="aspect-[4/3] rounded-[1.25rem]" />
         ) : results.length === 0 ? (
           <p className="lead py-12">
             No articles match “{q}”. Try a broader term, like “SEO” or “Instagram”.
@@ -58,13 +58,13 @@ export default function Blog() {
           <>
             {lead && (
               <Reveal>
-                <Link to={`/blog/${lead.slug}`} className="group mb-20 grid gap-8 border-b border-line pb-20 lg:grid-cols-12 lg:items-center lg:gap-12">
-                  <div className="aspect-[16/10] overflow-hidden rounded-3xl bg-mist lg:col-span-7">
+                <Link to={`/blog/${lead.slug}`} className="group mb-20 grid gap-8 border-b border-ink pb-20 lg:grid-cols-12 lg:items-end lg:gap-12">
+                  <div className="aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-mist lg:col-span-7">
                     <BlogCover post={lead} />
                   </div>
                   <div className="lg:col-span-5">
                     <p className="eyebrow text-violet">Latest article</p>
-                    <h2 className="display-md mt-4 text-balance text-3xl transition-colors duration-500 group-hover:text-violet sm:text-[2.75rem]">
+                    <h2 className="display mt-5 text-balance text-4xl transition-colors duration-500 group-hover:text-violet sm:text-[3.4rem]">
                       {lead.title}
                     </h2>
                     <p className="lead mt-5 line-clamp-4">{lead.excerpt}</p>
@@ -77,7 +77,7 @@ export default function Blog() {
             )}
             <div className="grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
               {rest.slice(0, shown).map((post, i) => (
-                <Reveal key={post.id} delay={(i % 3) * 0.08}>
+                <Reveal key={post.id} delay={(i % 3) * 0.08} className={i % 3 === 1 ? 'lg:mt-20' : ''}>
                   <BlogCard post={post} />
                 </Reveal>
               ))}

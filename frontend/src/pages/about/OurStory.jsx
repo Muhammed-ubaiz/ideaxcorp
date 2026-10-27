@@ -32,7 +32,7 @@ export default function OurStory({ settings }) {
   ].filter((m) => m.value > 0)
 
   return (
-    <section aria-labelledby="our-story-title" className="relative overflow-hidden bg-white py-24 text-ink md:py-36">
+    <section aria-labelledby="our-story-title" className="relative overflow-hidden py-24 text-ink md:py-36">
       <div className="site-container grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
         {/* ── Narrative ─────────────────────────────────────────── */}
         <motion.div
@@ -44,13 +44,12 @@ export default function OurStory({ settings }) {
         >
           <motion.p
             variants={item}
-            className="eyebrow inline-flex items-center gap-2.5 rounded-full border border-line bg-white/70 px-4 py-2 text-graphite backdrop-blur-md"
+            className="section-label text-graphite"
           >
-            <span className="size-1.5 rounded-full bg-violet shadow-[0_0_10px_1px] shadow-violet/50" aria-hidden="true" />
             Our story
           </motion.p>
 
-          <motion.h2 id="our-story-title" variants={item} className="display mt-8 text-balance text-[2.6rem] sm:text-6xl lg:text-[4.2rem]">
+          <motion.h2 id="our-story-title" variants={item} className="display-lg mt-8 text-balance">
             Built on data<span className="text-violet">,</span> grown across borders<span className="text-violet">.</span>
           </motion.h2>
 
@@ -66,11 +65,11 @@ export default function OurStory({ settings }) {
           )}
 
           {/* Timeline */}
-          <motion.ol variants={column} className="relative mt-12 space-y-7 border-l border-line pl-7">
+          <motion.ol variants={column} className="relative mt-12 space-y-7 border-l border-ink/25 pl-7">
             {MILESTONES.map((m) => (
               <motion.li key={m.place} variants={item} className="relative">
                 <span
-                  className="absolute -left-[calc(1.75rem+4.5px)] top-1.5 size-2 rounded-full bg-violet ring-4 ring-white"
+                  className="absolute -left-[calc(1.75rem+4.5px)] top-1.5 size-2 rounded-full bg-violet ring-4 ring-paper"
                   aria-hidden="true"
                 />
                 <p className="eyebrow text-violet">{m.place}</p>
@@ -87,10 +86,10 @@ export default function OurStory({ settings }) {
                 <motion.div
                   key={m.label}
                   variants={item}
-                  className="rounded-lg border border-line bg-white/70 p-4 shadow-[0_12px_30px_-18px_rgba(14,11,18,0.18)] backdrop-blur-md sm:p-5"
+                  className="border-t border-ink pt-4 sm:pt-5"
                 >
                   <dt className="text-xs text-graphite sm:text-sm">{m.label}</dt>
-                  <dd className="display mt-3 text-4xl sm:text-5xl">
+                  <dd className="display mt-3 text-5xl sm:text-6xl">
                     {String(m.value).padStart(2, '0')}
                     <span className="text-violet">.</span>
                   </dd>

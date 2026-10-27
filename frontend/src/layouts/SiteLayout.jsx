@@ -9,7 +9,7 @@ import ScrollManager from '../components/ScrollManager'
 import { EASE } from '../components/Reveal'
 
 /**
- * Public site shell. Each navigation lifts a violet curtain off the incoming page;
+ * Public site shell. Each navigation lifts an ink curtain off the incoming page;
  * the very first load skips it so the hero's own entrance plays uninterrupted.
  */
 export default function SiteLayout() {
@@ -30,7 +30,7 @@ export default function SiteLayout() {
         <motion.div
           key={`curtain-${pathname}`}
           aria-hidden="true"
-          className="pointer-events-none fixed inset-0 z-[80] origin-top bg-violet"
+          className="pointer-events-none fixed inset-0 z-[80] origin-top bg-ink"
           initial={{ scaleY: 1 }}
           animate={{ scaleY: 0 }}
           transition={{ duration: 0.9, ease: EASE, delay: 0.05 }}

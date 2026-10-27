@@ -14,38 +14,35 @@ export function ProjectPlaceholder({ project }) {
   )
 }
 
-/** Portfolio tile. Clicking opens the project viewer (handled by the parent via onOpen). */
-export default function PortfolioCard({ project, onOpen, aspect = 'aspect-[5/4]' }) {
+/**
+ * Compact portfolio card: a 3:4 image (posters and wide shots share one crop), then a small title,
+ * category and two-line description. Hovering eases the image in and reveals the arrow chip.
+ * Clicking opens the project viewer (handled by the parent via onOpen). `dark` is for ink sections.
+ */
+export default function PortfolioCard({ project, onOpen, dark = false }) {
   return (
     <button type="button" onClick={() => onOpen?.(project)} className="group block w-full text-left">
-      <div className={`relative overflow-hidden rounded-3xl bg-mist ring-1 ring-ink/10 ${aspect}`}>
+      <div className={`relative aspect-[3/4] overflow-hidden rounded-xl ${dark ? 'bg-ink-2' : 'bg-mist'}`}>
         {project.image ? (
           <img
             src={project.image}
             alt={project.title}
             loading="lazy"
-            className="size-full object-cover object-top transition-transform duration-[1.6s] ease-cinema group-hover:scale-[1.05]"
+            className="size-full object-cover transition-[scale,filter] duration-[1.2s] ease-cinema group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="size-full transition-transform duration-[1.6s] ease-cinema group-hover:scale-[1.03]">
-            <ProjectPlaceholder project={project} />
-          </div>
+          <ProjectPlaceholder project={project} />
         )}
-        {project.category && (
-          <span className="absolute left-4 top-4 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-ink backdrop-blur sm:left-5 sm:top-5">
-            @{project.category}
-          </span>
-        )}
-      </div>
-      <div className="mt-6 flex items-start justify-between gap-6">
-        <div>
-          <h3 className="display-md text-2xl text-ink transition-colors duration-500 group-hover:text-violet sm:text-[1.9rem]">{project.title}</h3>
-          {project.description && <p className="mt-2 line-clamp-2 max-w-xl text-graphite">{project.description}</p>}
-        </div>
-        <span className="grid size-12 shrink-0 place-items-center rounded-full border border-ink/15 transition-colors duration-500 group-hover:border-ink group-hover:bg-ink group-hover:text-white">
-          <ArrowUpRight className="size-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        <span className="absolute inset-0 bg-ink/0 transition-colors duration-700 group-hover:bg-ink/10" aria-hidden="true" />
+        <span className="absolute right-3 bottom-3 grid size-10 translate-y-2 place-items-center rounded-full bg-white text-ink opacity-0 transition-[opacity,translate] duration-500 ease-cinema group-hover:translate-y-0 group-hover:opacity-100">
+          <ArrowUpRight className="size-4" />
         </span>
       </div>
+      <div className={`mt-4 flex items-baseline justify-between gap-4 border-b pb-3 ${dark ? 'border-white/15' : 'border-ink/15'}`}>
+        <h3 className="truncate text-base font-semibold tracking-tight transition-colors duration-500 group-hover:text-violet sm:text-lg">{project.title}</h3>
+        {project.category && <span className={`shrink-0 text-xs ${dark ? 'text-white/50' : 'text-smoke'}`}>{project.category}</span>}
+      </div>
+      {project.description && <p className={`mt-3 line-clamp-2 text-sm leading-relaxed ${dark ? 'text-white/60' : 'text-graphite'}`}>{project.description}</p>}
     </button>
   )
 }

@@ -2,22 +2,29 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import Logo from './Logo'
-import { Close, Menu } from './Icons'
+import { ArrowRight, Close, Facebook, Instagram, LinkedIn, Plus, WhatsApp, YouTube } from './Icons'
 import { EASE } from './Reveal'
 import { useCollection, useSettings } from '../hooks/useContent'
-import { telHref } from '../utils/format'
+import { telHref, whatsappHref } from '../utils/format'
 
 const LINKS = [
   { to: '/', label: 'Home', end: true },
   { to: '/about', label: 'About' },
-  { to: '/services', label: 'Services' },
+  { to: '/services', label: 'Services', services: true },
   { to: '/portfolio', label: 'Portfolio' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/blog', label: 'Blogs' },
+  { to: '/contact', label: 'Contact Us' },
+]
+
+const SOCIALS = [
+  ['instagram', 'Instagram', Instagram],
+  ['facebook', 'Facebook', Facebook],
+  ['linkedin', 'LinkedIn', LinkedIn],
+  ['youtube', 'YouTube', YouTube],
 ]
 
 const pad = (n) => String(n).padStart(2, '0')
-const PROBE_Y = 44 // vertical centre of the floating bar
+const PROBE_Y = 40 // vertical centre of the bar
 
 /** Walks up from the element under the bar to the first opaque background and reports whether it is dark. */
 function surfaceIsDark() {
@@ -37,26 +44,35 @@ function surfaceIsDark() {
 }
 
 /**
- * Floating pill bar: MENU on the left, the logo in the centre and the call to action on the right.
- * It inverts against whatever is scrolling beneath it — white over dark sections, ink over light ones.
+ * Open header: the logo on the left, the call to action and a round menu button on the right.
+ * It slips away while scrolling down, returns on the way up, and inverts over dark sections.
+ * The menu is a full-screen ink panel with oversized numbered links.
  */
 export default function Navbar() {
   const { pathname } = useLocation()
   const { data: services } = useCollection('services')
   const settings = useSettings()
   const [dark, setDark] = useState(false)
+  const [hidden, setHidden] = useState(false)
   const [open, setOpen] = useState(false)
+  const [servicesOpen, setServicesOpen] = useState(false)
   const closeBtn = useRef(null)
   const menuBtn = useRef(null)
 
   useEffect(() => {
     let raf = 0
+    let lastY = window.scrollY
     const check = () => {
       cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => setDark(surfaceIsDark()))
+      raf = requestAnimationFrame(() => {
+        const y = window.scrollY
+        setHidden(y > 160 && y > lastY)
+        lastY = y
+        setDark(surfaceIsDark())
+      })
     }
     check()
-    const late = setTimeout(check, 400) // after the page transition settles
+    const late = setTimeout(check, 450) // after the page transition settles
     window.addEventListener('scroll', check, { passive: true })
     window.addEventListener('resize', check)
     return () => {
@@ -67,11 +83,15 @@ export default function Navbar() {
     }
   }, [pathname])
 
-  useEffect(() => setOpen(false), [pathname])
+  useEffect(() => {
+    setOpen(false)
+    setHidden(false)
+  }, [pathname])
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? 'hidden' : ''
     if (open) closeBtn.current?.focus()
+    else setServicesOpen(false)
     const onKey = (e) => {
       if (e.key !== 'Escape' || !open) return
       setOpen(false)
@@ -81,162 +101,221 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
 
-  // Over a dark section the pill is white with ink type; over a light one it is ink with white type.
-  const pill = dark ? 'bg-white text-ink' : 'bg-ink text-white'
-  const cta = dark ? 'bg-ink text-white hover:bg-violet' : 'bg-white text-ink hover:bg-violet hover:text-white'
+  const close = () => setOpen(false)
+  const socials = SOCIALS.filter(([key]) => settings.socials?.[key])
 
   return (
     <>
-      <header data-navbar data-chrome className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:pt-4">
+      <header
+        data-navbar
+        data-chrome
+        className={`fixed inset-x-0 top-0 z-50 transition-[translate,color] duration-700 ease-cinema ${hidden ? '-translate-y-full' : 'translate-y-0'} ${
+          dark ? 'text-white' : 'text-ink'
+        }`}
+      >
         <a
           href="#main"
-          className="pointer-events-auto sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-white"
         >
           Skip to content
         </a>
         <motion.nav
           aria-label="Main"
-          className={`pointer-events-auto mx-auto grid h-14 max-w-[40rem] grid-cols-[1fr_auto_1fr] items-center rounded-full pl-5 pr-2 shadow-[0_18px_40px_-22px_rgba(14,11,18,0.45)] transition-colors duration-500 ease-cinema sm:h-16 sm:pl-7 ${pill}`}
-          initial={{ y: -90, opacity: 0 }}
+          className="site-container flex h-20 items-center justify-between sm:h-24"
+          initial={{ y: -40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, ease: EASE, delay: 0.2 }}
+          transition={{ duration: 1, ease: EASE, delay: 0.15 }}
         >
-          <button
-            ref={menuBtn}
-            type="button"
-            onClick={() => setOpen(true)}
-            className="group flex items-center gap-2.5 justify-self-start text-sm font-semibold tracking-wide"
-            aria-label="Open menu"
-            aria-expanded={open}
-          >
-            <Menu className="size-5 transition-transform duration-500 ease-cinema group-hover:scale-x-125" />
-            <span className="hidden sm:inline">MENU</span>
-          </button>
+          <Logo light={dark} className="h-9 w-auto sm:h-11" />
 
-          <Logo light={!dark} className="h-8 w-auto sm:h-9" />
-
-          <Link
-            to="/contact"
-            className={`justify-self-end rounded-full px-4 py-2.5 text-sm font-semibold transition-colors duration-500 ease-cinema sm:px-6 sm:py-3 ${cta}`}
-          >
-            Let’s talk
-          </Link>
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <Link
+              to="/contact"
+              className={`group hidden items-center gap-2.5 rounded-full px-6 py-3 text-sm font-semibold transition-colors duration-500 ease-cinema sm:inline-flex ${
+                dark ? 'bg-white text-ink hover:bg-violet hover:text-white' : 'bg-ink text-white hover:bg-violet'
+              }`}
+            >
+              Get In Touch
+              <ArrowRight className="size-4 transition-transform duration-500 ease-cinema group-hover:translate-x-1" />
+            </Link>
+            <button
+              ref={menuBtn}
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              aria-expanded={open}
+              className={`group grid size-12 place-items-center rounded-full border transition-colors duration-500 ${
+                dark ? 'border-white/35 hover:border-white hover:bg-white hover:text-ink' : 'border-ink/30 hover:border-ink hover:bg-ink hover:text-white'
+              }`}
+            >
+              <span className="flex w-5 flex-col items-end gap-1.5" aria-hidden="true">
+                <span className="block h-0.5 w-5 bg-current" />
+                <span className="block h-0.5 w-3.5 bg-current transition-[width] duration-500 ease-cinema group-hover:w-5" />
+              </span>
+            </button>
+          </div>
         </motion.nav>
       </header>
 
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-[60] overflow-y-auto px-3 pt-3 pb-6 sm:px-4 sm:pt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.35, delay: 0.15 } }}
-            transition={{ duration: 0.4 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="fixed inset-0 z-[60] overflow-y-auto bg-ink text-white"
+            initial={{ clipPath: 'inset(0% 0% 100% 0%)' }}
+            animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+            exit={{ clipPath: 'inset(0% 0% 100% 0%)', transition: { duration: 0.6, ease: EASE, delay: 0.1 } }}
+            transition={{ duration: 0.8, ease: EASE }}
           >
-            {/* the page stays visible, dimmed and blurred, behind the panel; clicking it closes the menu */}
-            <div aria-hidden="true" className="fixed inset-0 bg-black/45 backdrop-blur-md" onClick={() => setOpen(false)} />
-
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu"
-              className="relative mx-auto max-w-[110rem] rounded-[2rem] bg-[#141414] px-6 pb-8 text-white shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] sm:px-12 sm:pb-10"
-              initial={{ clipPath: 'inset(0% 32% 88% 32% round 2rem)' }}
-              animate={{ clipPath: 'inset(0% 0% 0% 0% round 2rem)' }}
-              exit={{ clipPath: 'inset(0% 32% 88% 32% round 2rem)' }}
-              transition={{ duration: 0.7, ease: EASE }}
-            >
-              <div className="grid h-16 grid-cols-[1fr_auto_1fr] items-center sm:h-20">
-                <button
-                  ref={closeBtn}
-                  type="button"
-                  onClick={() => {
-                    setOpen(false)
-                    menuBtn.current?.focus()
-                  }}
-                  className="group flex items-center gap-3 justify-self-start text-sm font-semibold tracking-wide"
-                  aria-label="Close menu"
-                >
-                  <Close className="size-5 transition-transform duration-500 ease-cinema group-hover:rotate-90" />
-                  <span className="hidden sm:inline">MENU</span>
-                </button>
-                <Logo light className="h-8 w-auto sm:h-9" onClick={() => setOpen(false)} />
-                <Link
-                  to="/contact"
-                  className="justify-self-end rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-ink transition-colors duration-500 hover:bg-violet hover:text-white sm:px-6 sm:py-3"
-                >
-                  Let’s talk
-                </Link>
+            <div className="site-container flex min-h-full flex-col">
+              <div className="flex h-20 items-center justify-between sm:h-24">
+                <Logo light className="h-9 w-auto sm:h-11" onClick={close} />
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <Link
+                    to="/contact"
+                    onClick={close}
+                    className="hidden rounded-full bg-white px-6 py-3 text-sm font-semibold text-ink transition-colors duration-500 hover:bg-violet hover:text-white sm:inline-flex"
+                  >
+                    Get In Touch
+                  </Link>
+                  <button
+                    ref={closeBtn}
+                    type="button"
+                    onClick={() => {
+                      close()
+                      menuBtn.current?.focus()
+                    }}
+                    aria-label="Close menu"
+                    className="group grid size-12 place-items-center rounded-full border border-white/35 transition-colors duration-500 hover:border-white hover:bg-white hover:text-ink"
+                  >
+                    <Close className="size-5 transition-transform duration-500 ease-cinema group-hover:rotate-90" />
+                  </button>
+                </div>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}
-              >
-                {services.length > 0 && (
-                  <section className="mt-8 sm:mt-10">
-                    <h2 className="kicker text-white/50">Services</h2>
-                    <ul className="mt-6 grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-4">
-                      {services.map((s, i) => (
-                        <li key={s.id}>
-                          <Link to={`/services/${s.slug}`} onClick={() => setOpen(false)} className="group flex items-baseline gap-4">
-                            <span className="w-5 shrink-0 text-sm tabular-nums text-white/45">{pad(i + 1)}</span>
-                            <span>
-                              <span className="block text-xl font-bold leading-snug tracking-tight transition-colors duration-500 group-hover:text-violet sm:text-2xl">
-                                {s.title}
-                              </span>
-                              {s.tagline && <span className="mt-1.5 block text-sm text-white/50">{s.tagline}</span>}
+              <nav aria-label="Site" className="my-auto py-12">
+                <ul className="flex flex-col">
+                  {LINKS.map((l, i) => (
+                    <li key={l.to} className="overflow-hidden border-b border-white/10">
+                      <motion.div
+                        initial={{ y: '100%' }}
+                        animate={{ y: '0%' }}
+                        transition={{ duration: 0.9, ease: EASE, delay: 0.25 + i * 0.06 }}
+                      >
+                        <div className="flex items-center justify-between gap-6">
+                          <NavLink
+                            to={l.to}
+                            end={l.end}
+                            onClick={close}
+                            className={({ isActive }) =>
+                              `group flex items-baseline gap-4 py-3 sm:gap-6 sm:py-4 ${isActive ? 'text-white' : 'text-white/60 hover:text-white'}`
+                            }
+                          >
+                            <span className="w-7 text-xs tabular-nums text-white/40 sm:text-sm">{pad(i + 1)}</span>
+                            <span className="display text-[2.6rem] transition-transform duration-700 ease-cinema group-hover:translate-x-3 sm:text-7xl lg:text-[5.5rem]">
+                              {l.label}
                             </span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
+                          </NavLink>
+                          {l.services && services.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setServicesOpen((v) => !v)}
+                              aria-expanded={servicesOpen}
+                              aria-controls="menu-services"
+                              aria-label={servicesOpen ? 'Hide services' : 'Show services'}
+                              className={`grid size-11 shrink-0 place-items-center rounded-full border border-white/25 transition-transform duration-500 ease-cinema hover:border-white ${
+                                servicesOpen ? 'rotate-45' : ''
+                              }`}
+                            >
+                              <Plus />
+                            </button>
+                          )}
+                        </div>
+                        {l.services && (
+                          <AnimatePresence initial={false}>
+                            {servicesOpen && (
+                              <motion.ul
+                                id="menu-services"
+                                className="grid gap-x-10 overflow-hidden pl-11 sm:grid-cols-2 sm:pl-[3.25rem]"
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.6, ease: EASE }}
+                              >
+                                {services.map((s) => (
+                                  <li key={s.id}>
+                                    <Link
+                                      to={`/services/${s.slug}`}
+                                      onClick={close}
+                                      className="link-underline inline-block py-2 text-lg text-white/70 transition-colors hover:text-white sm:text-xl"
+                                    >
+                                      {s.title}
+                                    </Link>
+                                  </li>
+                                ))}
+                                <li>
+                                  <Link
+                                    to="/dubai"
+                                    onClick={close}
+                                    className="link-underline inline-block py-2 text-lg text-white/70 transition-colors hover:text-white sm:text-xl"
+                                  >
+                                    SEO Services in Dubai
+                                  </Link>
+                                </li>
+                                <li className="pb-5 sm:col-span-2" aria-hidden="true" />
+                              </motion.ul>
+                            )}
+                          </AnimatePresence>
+                        )}
+                      </motion.div>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
 
-                <nav aria-label="Site" className="mt-12 sm:mt-14">
-                  <h2 className="kicker text-white/50">Explore</h2>
-                  <ul className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
-                    {LINKS.map((l) => (
-                      <li key={l.to}>
-                        <NavLink
-                          to={l.to}
-                          end={l.end}
-                          onClick={() => setOpen(false)}
-                          className={({ isActive }) =>
-                            `link-underline text-xl font-semibold transition-colors duration-500 sm:text-2xl ${isActive ? 'text-white' : 'text-white/75 hover:text-white'}`
-                          }
-                        >
-                          {l.label}
-                        </NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-
-                <div className="mt-12 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-white/55 sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="flex flex-wrap gap-x-2">
-                    <a href={telHref(settings.phone)} className="transition-colors hover:text-white">
-                      {settings.phone}
+              <motion.div
+                className="flex flex-col gap-6 border-t border-white/10 py-8 text-sm text-white/60 lg:flex-row lg:items-center lg:justify-between"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+              >
+                <p className="flex flex-wrap gap-x-6 gap-y-2">
+                  <a href={telHref(settings.phone)} className="link-underline hover:text-white">
+                    {settings.phone}
+                  </a>
+                  <a href={`mailto:${settings.email}`} className="link-underline hover:text-white">
+                    {settings.email}
+                  </a>
+                  {settings.whatsapp && (
+                    <a
+                      href={whatsappHref(settings.whatsapp, settings.whatsappMessage)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="link-underline inline-flex items-center gap-2 hover:text-white"
+                    >
+                      <WhatsApp className="size-4" /> WhatsApp us
                     </a>
-                    <span aria-hidden="true">·</span>
-                    <a href={`mailto:${settings.email}`} className="transition-colors hover:text-white">
-                      {settings.email}
-                    </a>
-                  </p>
-                  <p className="flex gap-6">
-                    <Link to="/faq" onClick={() => setOpen(false)} className="transition-colors hover:text-white">
-                      FAQ
-                    </Link>
-                    <Link to="/privacy-policy" onClick={() => setOpen(false)} className="transition-colors hover:text-white">
-                      Privacy policy
-                    </Link>
-                  </p>
-                </div>
+                  )}
+                </p>
+                <ul className="flex gap-2">
+                  {socials.map(([key, label, Icon]) => (
+                    <li key={key}>
+                      <a
+                        href={settings.socials[key]}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className="grid size-11 place-items-center rounded-full border border-white/15 transition-colors duration-500 hover:border-white hover:bg-white hover:text-ink"
+                      >
+                        <Icon />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </motion.div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

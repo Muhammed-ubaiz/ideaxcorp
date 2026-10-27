@@ -11,6 +11,7 @@ const Blog = lazy(() => import('./pages/Blog'))
 const BlogDetails = lazy(() => import('./pages/BlogDetails'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Faq = lazy(() => import('./pages/Faq'))
+const LocationDubai = lazy(() => import('./pages/LocationDubai'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="blog/:slug" element={<BlogDetails />} />
           <Route path="contact" element={<Contact />} />
           <Route path="faq" element={<Faq />} />
+          <Route path="dubai" element={<LocationDubai />} />
           <Route path="privacy-policy" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Route>

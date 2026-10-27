@@ -55,11 +55,6 @@
         "type": 301
       },
       {
-        "source": "/dubai",
-        "destination": "/services/search-engine-optimization",
-        "type": 301
-      },
-      {
         "source": "/thrissur",
         "destination": "/services/search-engine-optimization",
         "type": 301

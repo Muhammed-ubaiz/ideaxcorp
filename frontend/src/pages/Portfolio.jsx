@@ -29,8 +29,8 @@ export default function Portfolio() {
         intro="We craft powerful websites and digital solutions that help brands grow, engage and convert."
       />
 
-      <section className="site-container py-20 md:py-28">
-        <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:justify-center sm:px-0" role="group" aria-label="Filter projects">
+      <section className="site-container py-16 md:py-20">
+        <div className="no-scrollbar -mx-5 flex gap-2 overflow-x-auto px-5 pb-2 sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label="Filter projects">
           {categories.map((c) => (
             <button
               key={c}
@@ -38,7 +38,7 @@ export default function Portfolio() {
               onClick={() => setFilter(c)}
               aria-pressed={filter === c}
               className={`shrink-0 rounded-full px-5 py-2.5 text-sm font-semibold transition-colors duration-300 ${
-                filter === c ? 'bg-ink text-white' : 'border border-ink/15 text-ink hover:border-ink'
+                filter === c ? 'bg-ink text-white' : 'border border-ink/25 text-ink hover:border-ink'
               }`}
             >
               {c}
@@ -46,11 +46,11 @@ export default function Portfolio() {
           ))}
         </div>
 
-        <div className="mt-12">
+        <div className="mt-10">
           {loading ? (
-            <GridSkeleton className="aspect-[5/4] rounded-3xl" />
+            <GridSkeleton className="aspect-[3/4] rounded-xl" />
           ) : (
-            <motion.div layout className="grid gap-x-8 gap-y-16 md:grid-cols-2">
+            <motion.div layout className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {items.map((p, i) => (
                   <motion.div
@@ -59,8 +59,7 @@ export default function Portfolio() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.96 }}
-                    transition={{ duration: 0.9, ease: EASE, delay: (i % 2) * 0.08 }}
-                    className={i % 2 === 1 ? 'md:mt-24' : ''}
+                    transition={{ duration: 0.8, ease: EASE, delay: (i % 3) * 0.08 }}
                   >
                     <PortfolioCard project={p} onOpen={setProject} />
                   </motion.div>
@@ -71,14 +70,14 @@ export default function Portfolio() {
         </div>
 
         {settings.portfolioDriveUrl && (
-          <div className="mt-24 flex flex-col items-start gap-6 rounded-3xl bg-mist p-8 sm:flex-row sm:items-center sm:justify-between sm:p-12">
-            <p className="display-md text-2xl sm:text-3xl">There’s more where this came from.</p>
-            <Button href={settings.portfolioDriveUrl}>View more work on Drive</Button>
+          <div className="mt-16 flex flex-col items-start gap-6 rounded-xl bg-ink p-8 text-white sm:p-10 lg:flex-row lg:items-center lg:justify-between">
+            <p className="display text-balance text-3xl sm:text-4xl">There’s more where this came from.</p>
+            <Button href={settings.portfolioDriveUrl} variant="light" className="shrink-0">View more work on Drive</Button>
           </div>
         )}
       </section>
 
-      <ProjectViewer project={project} onClose={() => setProject(null)} />
+      <ProjectViewer project={project} projects={items} onNavigate={setProject} onClose={() => setProject(null)} />
     </>
   )
 }

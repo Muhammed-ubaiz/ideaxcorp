@@ -27,7 +27,7 @@ function matchSubject(raw = '') {
 function InfoRow({ icon: Icon, label, children }) {
   return (
     <div className="flex gap-4">
-      <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white/[0.08] text-white">
+      <span className="grid size-12 shrink-0 place-items-center rounded-full border border-white/20 text-white">
         <Icon />
       </span>
       <div>
@@ -58,7 +58,7 @@ export default function Contact() {
         </Reveal>
 
         <Reveal delay={0.15} className="lg:col-span-5">
-          <div className="space-y-8 rounded-3xl bg-black p-8 text-white sm:p-10">
+          <div className="space-y-8 rounded-[1.25rem] bg-ink p-8 text-white sm:p-10">
             <InfoRow icon={Mail} label="Email us">
               <a href={`mailto:${settings.email}`} className="hover:text-lilac">
                 {settings.email}
@@ -81,7 +81,7 @@ export default function Contact() {
           </div>
           <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
             {settings.offices.map((o) => (
-              <div key={o.label} className="flex gap-4 rounded-3xl bg-mist p-6 sm:p-8">
+              <div key={o.label} className="flex gap-4 rounded-[1.25rem] bg-paper-light p-6 ring-1 ring-ink/10 sm:p-8">
                 <MapPin className="mt-0.5 size-5 shrink-0 text-violet" />
                 <div>
                   <p className="font-semibold">{o.label}</p>

@@ -2,18 +2,20 @@
 
 /*
   Ideaxcorp design tokens
-  - violet is sampled from the logo (#9700FF); everything else is a neutral built around it.
+  - Editorial palette: warm paper and near-black ink, with violet (#9700FF, sampled from the logo)
+    kept as the single brand accent.
   - Hubot Sans (display) is set wide for headlines and narrow for labels; Mona Sans is the body face.
 */
 @theme {
-  --color-ink: #0e0b12;
-  --color-ink-2: #1a1620;
-  --color-ink-3: #2a2531;
-  --color-paper: #ffffff;
-  --color-mist: #f5f3f8;
-  --color-line: #e7e3ee;
-  --color-graphite: #5b5766;
-  --color-smoke: #a19cab;
+  --color-ink: #0b0b0c;
+  --color-ink-2: #161618;
+  --color-ink-3: #242427;
+  --color-paper: #ecebe6;
+  --color-paper-light: #f4f3ef;
+  --color-mist: #e2e1db;
+  --color-line: #cfcec7;
+  --color-graphite: #55545a;
+  --color-smoke: #8d8c90;
   --color-violet: #9700ff;
   --color-violet-deep: #6e00ba;
   --color-lilac: #ebddff;
@@ -34,7 +36,7 @@
     }
   }
 
-  --container-site: 88rem;
+  --container-site: 96rem;
 }
 
 @layer base {
@@ -111,6 +113,38 @@
 
   .lead {
     @apply text-lg leading-relaxed text-graphite md:text-xl;
+  }
+
+  /* Oversized editorial headline: the hero and the largest section statements. */
+  .display-xl {
+    font-family: var(--font-display);
+    font-stretch: 100%;
+    font-weight: 800;
+    font-size: clamp(3.1rem, 11.5vw, 12.5rem);
+    letter-spacing: -0.055em;
+    line-height: 0.86;
+  }
+  .display-lg {
+    font-family: var(--font-display);
+    font-stretch: 100%;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6.4vw, 6.75rem);
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+  }
+
+  /* Section label: a small index number and a name separated by a rule, e.g. "01 — Our Portfolio". */
+  .section-label {
+    @apply flex items-center gap-3;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  .section-label::before {
+    content: '';
+    @apply inline-block h-px w-8 bg-current opacity-50;
   }
 
   /* Rich text for blog articles and policy pages. */

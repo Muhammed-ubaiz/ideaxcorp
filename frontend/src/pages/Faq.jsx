@@ -21,9 +21,9 @@ export default function Faq() {
           {loading ? <Skeleton className="h-96" /> : <FaqAccordion items={data} />}
         </div>
         <Reveal delay={0.15} className="lg:col-span-4">
-          <div className="rounded-3xl bg-black p-8 text-white sm:p-10 lg:sticky lg:top-28">
-            <h2 className="display-md text-3xl">Still have a question?</h2>
-            <p className="mt-4 text-white/65">Tell us about your business and we’ll recommend a strategy tailored to your needs.</p>
+          <div className="rounded-[1.25rem] bg-violet p-8 text-white sm:p-10 lg:sticky lg:top-28">
+            <h2 className="display text-4xl sm:text-5xl">Still have a question?</h2>
+            <p className="mt-5 text-white/80">Tell us about your business and we’ll recommend a strategy tailored to your needs.</p>
             <Button to="/contact" variant="light" className="mt-8">
               Contact us
             </Button>

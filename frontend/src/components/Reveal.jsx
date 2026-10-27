@@ -24,13 +24,13 @@ export function Reveal({ as = 'div', delay = 0, y = 36, duration = 1.1, classNam
  * Heading whose lines rise out of a mask one after another.
  * `lines` is an array of strings or nodes; each becomes one masked line.
  */
-export function RevealLines({ as = 'h2', lines, className = '', lineClassName = '', delay = 0, stagger = 0.1, animateOnMount = false }) {
+export function RevealLines({ as = 'h2', lines, className = '', lineClassName = '', delay = 0, stagger = 0.1, animateOnMount = false, ...props }) {
   // The observer sits on the heading itself: the line spans start clipped by their masks,
   // so they would never register as "in view" on their own.
   const Tag = motion[as]
   const trigger = animateOnMount ? { animate: 'show' } : { whileInView: 'show', viewport: VIEWPORT }
   return (
-    <Tag className={className} initial="hidden" {...trigger}>
+    <Tag className={className} initial="hidden" {...trigger} {...props}>
       {lines.map((line, i) => (
         <span key={i} className={`block overflow-hidden pb-[0.08em] ${lineClassName}`}>
           <motion.span

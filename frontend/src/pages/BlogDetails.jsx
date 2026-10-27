@@ -73,12 +73,12 @@ export default function BlogDetails() {
       <motion.div aria-hidden="true" className="fixed inset-x-0 top-0 z-[55] h-[3px] origin-left bg-violet" style={{ scaleX: progress }} />
 
       <article>
-        <header className="mx-auto max-w-4xl px-5 pt-36 text-center sm:px-8 md:pt-44">
+        <header className="site-container pt-36 md:pt-48">
           <Link to="/blog" className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-4 py-2 text-sm font-semibold text-ink transition-colors hover:border-ink">
             <ArrowLeft className="size-4" /> All articles
           </Link>
           <motion.h1
-            className="display mt-8 text-balance text-[2.3rem] leading-[1] sm:text-5xl lg:text-[4rem]"
+            className="display-lg mt-10 max-w-6xl text-balance"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: EASE, delay: 0.1 }}
@@ -86,7 +86,7 @@ export default function BlogDetails() {
             {post.title}
           </motion.h1>
           <motion.p
-            className="eyebrow mt-8 flex flex-wrap justify-center gap-x-4 gap-y-1 text-graphite"
+            className="eyebrow mt-10 flex flex-wrap gap-x-6 gap-y-1 border-t border-ink/15 pt-6 text-graphite"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1, delay: 0.5 }}
@@ -99,12 +99,12 @@ export default function BlogDetails() {
 
         {post.coverImage && (
           <motion.div
-            className="mx-auto mt-14 max-w-6xl overflow-hidden px-5 sm:px-8"
+            className="site-container mt-14 overflow-hidden"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.3, ease: EASE, delay: 0.35 }}
           >
-            <img src={post.coverImage} alt="" className="max-h-[42rem] w-full rounded-3xl bg-mist object-cover" />
+            <img src={post.coverImage} alt="" className="max-h-[46rem] w-full rounded-[1.25rem] bg-mist object-cover" />
           </motion.div>
         )}
 
@@ -117,9 +117,9 @@ export default function BlogDetails() {
       </article>
 
       {related.length > 0 && (
-        <section className="bg-mist py-24 md:py-32">
+        <section className="border-t border-ink/15 py-24 md:py-32">
           <div className="site-container">
-            <h2 className="display text-5xl sm:text-6xl">Keep reading</h2>
+            <h2 className="display-lg">Keep reading</h2>
             <div className="mt-14 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((p, i) => (
                 <Reveal key={p.id} delay={i * 0.08}>

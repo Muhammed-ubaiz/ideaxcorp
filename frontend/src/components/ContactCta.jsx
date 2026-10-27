@@ -11,12 +11,12 @@ import { telHref } from '../utils/format'
 export default function ContactCta() {
   const settings = useSettings()
   return (
-    <section className="bg-black py-20 text-white md:py-28">
+    <section className="bg-ink py-20 text-white md:py-28">
       <div className="site-container">
         <Reveal y={30}>
           <Link
             to="/contact"
-            className="group relative isolate block overflow-hidden rounded-[2rem] bg-ink-2 px-7 py-14 sm:px-12 sm:py-20 lg:rounded-[2.5rem] lg:px-16 lg:py-24"
+            className="group relative isolate block overflow-hidden rounded-[1.25rem] bg-ink-2 px-7 py-14 sm:px-12 sm:py-20 lg:px-16 lg:py-24"
           >
             <span
               aria-hidden="true"
@@ -26,7 +26,7 @@ export default function ContactCta() {
 
             <p className="eyebrow text-white/55 transition-colors duration-500 group-hover:text-white/80">Questions, ideas, or partnership opportunities?</p>
             <div className="mt-10 flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
-              <RevealLines as="p" lines={['Let’s build', 'together.']} className="display text-[3.4rem] leading-[0.95] sm:text-8xl lg:text-[8.5rem]" />
+              <RevealLines as="p" lines={['Let’s build', 'together.']} className="display-xl" />
               <span className="flex shrink-0 items-center gap-5">
                 <span className="text-lg font-semibold">Start a project</span>
                 <span className="grid size-20 place-items-center rounded-full bg-white text-ink transition-transform duration-700 ease-cinema group-hover:rotate-45 group-hover:scale-110 sm:size-28">

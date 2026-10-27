@@ -19,14 +19,14 @@ export default function VisionMission({ vision, mission }) {
   if (!rows.length) return null
 
   return (
-    <section aria-label="Vision and mission" className="bg-white py-24 text-ink md:py-36">
+    <section aria-label="Vision and mission" className="bg-ink py-24 text-white md:py-36">
       <div className="site-container">
         <Reveal className="flex items-end justify-between gap-6">
           <p className="eyebrow flex items-center gap-2.5 text-violet">
             <span className="size-1.5 bg-violet" aria-hidden="true" />
             What drives us
           </p>
-          <p className="eyebrow text-ink">Data · Strategy · Technology</p>
+          <p className="eyebrow text-white/55">Data · Strategy · Technology</p>
         </Reveal>
 
         <div className="mt-12 md:mt-16">
@@ -50,16 +50,16 @@ function Statement({ index, label, text }) {
     .flatMap((part, i) => part.split(/\s+/).filter(Boolean).map((word) => ({ word, accent: i % 2 === 1 })))
 
   return (
-    <article ref={ref} className="grid gap-8 border-t border-line py-14 md:py-20 lg:grid-cols-12 lg:gap-12">
+    <article ref={ref} className="grid gap-8 border-t border-white/15 py-14 md:py-20 lg:grid-cols-12 lg:gap-12">
       <Reveal className="lg:col-span-4">
         <span className="font-mono text-sm text-violet">{index}</span>
-        <h2 className="display mt-4 text-6xl text-ink sm:text-7xl lg:text-8xl">
+        <h2 className="display mt-4 text-6xl text-white sm:text-7xl lg:text-8xl">
           {label}
           <span className="text-violet">.</span>
         </h2>
       </Reveal>
 
-      <p className="display-md text-2xl leading-snug text-ink sm:text-3xl lg:col-span-8 lg:pt-10 lg:text-4xl lg:leading-[1.2]">
+      <p className="display-md text-2xl leading-snug text-white sm:text-3xl lg:col-span-8 lg:pt-10 lg:text-4xl lg:leading-[1.2]">
         <span className="sr-only">{text}</span>
         <span aria-hidden="true">
           {words.map(({ word, accent }, i) => (
